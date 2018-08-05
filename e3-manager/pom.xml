@@ -18,7 +18,6 @@
         <module>e3-manager-dao</module>
         <module>e3-manager-interface</module>
         <module>e3-manager-service</module>
-        <module>e3-manager-web</module>
     </modules>
 
     <!--依赖e3-common-->

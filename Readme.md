@@ -167,3 +167,23 @@
    ```
 
 4. 分别在 *e3-manager-interface*、*e3-manager-service*、*e3-manager-web* 中创建对应的 `TbItemService`、`TbItemServiceImpl`、`TbItemController` 文件，具体查看项目源码。
+
+### 引入Dubbo
+
+1. 整改 *e3-manager-web*，修改其 parent 为 *e3-parent*，使得其与 *e3-manager* 同级，将service层依赖修改为依赖 *e3-manager-interface*；
+
+   ![重构项目结构](readme.assets/1533479261640.png)
+
+2. [拉取ZooKeeper镜像](https://hub.docker.com/_/zookeeper/)；
+
+   ```bash
+   docker pull zookeeper:3.4.13
+   ```
+
+3. 启动ZooKeeper实例用于Dubbo的注册中心；
+
+   ```bash
+   docker run --name 容器名称 -p 2181:2181 --restart always -d zookeeper:3.4.13
+   ```
+
+   

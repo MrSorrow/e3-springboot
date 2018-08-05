@@ -1,5 +1,6 @@
 package guo.ping.e3mall.manager.mapper;
 
+import guo.ping.e3mall.manager.service.TbItemService;
 import guo.ping.e3mall.pojo.TbItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,11 +13,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class DaoTest {
 
     @Autowired
-    private TbItemMapper tbItemMapper;
+    private TbItemService tbItemService;
 
     @Test
     public void selectTbItemByIDTest() {
-        TbItem tbItem = tbItemMapper.selectByPrimaryKey(536563L);
+        TbItem tbItem = tbItemService.getItemById(536563L);
         System.out.println(tbItem);
     }
 }
