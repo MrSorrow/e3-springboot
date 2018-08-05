@@ -1,0 +1,26 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="guo.ping.e3mall.manager.mapper.TbItemParamItemMapper">
+    <resultMap id="MiniResultMap" type="guo.ping.e3mall.pojo.TbItemParamItem">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="item_id" property="itemId" jdbcType="BIGINT"/>
+        <result column="created" property="created" jdbcType="TIMESTAMP"/>
+        <result column="updated" property="updated" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap" type="guo.ping.e3mall.pojo.TbItemParamItem">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="item_id" property="itemId" jdbcType="BIGINT"/>
+        <result column="param_data" property="paramData" jdbcType="LONGVARCHAR" />
+        <result column="created" property="created" jdbcType="TIMESTAMP"/>
+        <result column="updated" property="updated" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="guo.ping.e3mall.pojo.TbItemParamItem">
+        INSERT INTO tb_item_param_item
+        (item_id, param_data, created, updated) VALUES (#{itemId}, #{paramData}, #{created}, #{updated})
+    </insert>
+
+    <select id="selectItemParamByItemId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT * FROM tb_item_param_item WHERE item_id = #{itemId}
+    </select>
+</mapper>

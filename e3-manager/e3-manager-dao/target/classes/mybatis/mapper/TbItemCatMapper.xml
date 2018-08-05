@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="guo.ping.e3mall.manager.mapper.TbItemCatMapper" >
+    <resultMap id="BaseResultMap" type="guo.ping.e3mall.pojo.TbItemCat" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="sort_order" property="sortOrder" jdbcType="INTEGER" />
+        <result column="is_parent" property="isParent" jdbcType="BIT" />
+        <result column="created" property="created" jdbcType="TIMESTAMP" />
+        <result column="updated" property="updated" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <select id="getItemCatByParentId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT *
+        FROM tb_item_cat
+        WHERE parent_id = #{parentId, jdbcType=BIGINT}
+    </select>
+
+    <select id="getItemCatNameById" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT name
+        FROM tb_item_cat
+        WHERE id = #{id}
+    </select>
+
+</mapper>

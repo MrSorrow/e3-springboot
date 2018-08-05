@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="guo.ping.e3mall.manager.mapper.TbContentMapper">
+    <resultMap id="MiniResultMap" type="guo.ping.e3mall.pojo.TbContent">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="category_id" property="categoryId" jdbcType="BIGINT"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="sub_title" property="subTitle" jdbcType="VARCHAR"/>
+        <result column="title_desc" property="titleDesc" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="pic" property="pic" jdbcType="VARCHAR"/>
+        <result column="pic2" property="pic2" jdbcType="VARCHAR"/>
+        <result column="created" property="created" jdbcType="TIMESTAMP"/>
+        <result column="updated" property="updated" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="BaseResultMap" type="guo.ping.e3mall.pojo.TbContent" extends="MiniResultMap">
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <select id="getContentListByCategoryId" parameterType="java.lang.Long" resultMap="MiniResultMap">
+        SELECT id, title, sub_title, title_desc, url, pic, pic2, created, updated
+        FROM tb_content
+        WHERE category_id = #{categoryId}
+    </select>
+
+    <select id="getAllContentList" resultMap="MiniResultMap">
+        SELECT id, title, sub_title, title_desc, url, pic, pic2, created, updated
+        FROM tb_content
+    </select>
+
+    <insert id="insertContent" parameterType="guo.ping.e3mall.pojo.TbContent">
+        INSERT INTO tb_content
+        (category_id, title, sub_title, title_desc, url, pic, pic2, content, created, updated) VALUES
+        (#{categoryId}, #{title}, #{subTitle}, #{titleDesc}, #{url}, #{pic}, #{pic2}, #{content}, #{created}, #{updated})
+    </insert>
+</mapper>

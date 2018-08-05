@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="guo.ping.e3mall.manager.mapper.TbOrderMapper">
+    <resultMap id="BaseResultMap" type="guo.ping.e3mall.pojo.TbOrder">
+        <id column="order_id" property="orderId" jdbcType="VARCHAR"/>
+        <result column="payment" property="payment" jdbcType="VARCHAR"/>
+        <result column="payment_type" property="paymentType" jdbcType="INTEGER"/>
+        <result column="post_fee" property="postFee" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="payment_time" property="paymentTime" jdbcType="TIMESTAMP"/>
+        <result column="consign_time" property="consignTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="close_time" property="closeTime" jdbcType="TIMESTAMP"/>
+        <result column="shipping_name" property="shippingName" jdbcType="VARCHAR"/>
+        <result column="shipping_code" property="shippingCode" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="buyer_message" property="buyerMessage" jdbcType="VARCHAR"/>
+        <result column="buyer_nick" property="buyerNick" jdbcType="VARCHAR"/>
+        <result column="buyer_rate" property="buyerRate" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="insert" parameterType="guo.ping.e3mall.pojo.TbOrder">
+        INSERT INTO tb_order
+        (order_id, payment, payment_type, post_fee, status, create_time, update_time, payment_time, consign_time,
+        end_time, close_time, shipping_name, shipping_code, user_id, buyer_message, buyer_nick, buyer_rate)
+        VALUES (#{orderId,jdbcType=VARCHAR}, #{payment,jdbcType=VARCHAR}, #{paymentType,jdbcType=INTEGER},
+          #{postFee,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+          #{updateTime,jdbcType=TIMESTAMP}, #{paymentTime,jdbcType=TIMESTAMP}, #{consignTime,jdbcType=TIMESTAMP},
+          #{endTime,jdbcType=TIMESTAMP}, #{closeTime,jdbcType=TIMESTAMP}, #{shippingName,jdbcType=VARCHAR},
+          #{shippingCode,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, #{buyerMessage,jdbcType=VARCHAR},
+          #{buyerNick,jdbcType=VARCHAR}, #{buyerRate,jdbcType=INTEGER})
+    </insert>
+</mapper>

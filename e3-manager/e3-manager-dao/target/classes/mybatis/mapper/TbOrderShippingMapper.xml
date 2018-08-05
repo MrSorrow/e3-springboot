@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="guo.ping.e3mall.manager.mapper.TbOrderShippingMapper">
+    <resultMap id="BaseResultMap" type="guo.ping.e3mall.pojo.TbOrderShipping">
+        <id column="order_id" property="orderId" jdbcType="VARCHAR"/>
+        <result column="receiver_name" property="receiverName" jdbcType="VARCHAR"/>
+        <result column="receiver_phone" property="receiverPhone" jdbcType="VARCHAR"/>
+        <result column="receiver_mobile" property="receiverMobile" jdbcType="VARCHAR"/>
+        <result column="receiver_state" property="receiverState" jdbcType="VARCHAR"/>
+        <result column="receiver_city" property="receiverCity" jdbcType="VARCHAR"/>
+        <result column="receiver_district" property="receiverDistrict" jdbcType="VARCHAR"/>
+        <result column="receiver_address" property="receiverAddress" jdbcType="VARCHAR"/>
+        <result column="receiver_zip" property="receiverZip" jdbcType="VARCHAR"/>
+        <result column="created" property="created" jdbcType="TIMESTAMP"/>
+        <result column="updated" property="updated" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="guo.ping.e3mall.pojo.TbOrderShipping">
+        insert into tb_order_shipping (order_id, receiver_name, receiver_phone,
+          receiver_mobile, receiver_state, receiver_city,
+          receiver_district, receiver_address, receiver_zip,
+          created, updated)
+        values (#{orderId,jdbcType=VARCHAR}, #{receiverName,jdbcType=VARCHAR}, #{receiverPhone,jdbcType=VARCHAR},
+          #{receiverMobile,jdbcType=VARCHAR}, #{receiverState,jdbcType=VARCHAR}, #{receiverCity,jdbcType=VARCHAR},
+          #{receiverDistrict,jdbcType=VARCHAR}, #{receiverAddress,jdbcType=VARCHAR}, #{receiverZip,jdbcType=VARCHAR},
+          #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP})
+  </insert>
+</mapper>

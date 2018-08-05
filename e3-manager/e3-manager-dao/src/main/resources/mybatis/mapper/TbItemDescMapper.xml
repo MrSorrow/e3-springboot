@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="guo.ping.e3mall.manager.mapper.TbItemDescMapper">
+    <resultMap id="MiniResultMap" type="guo.ping.e3mall.pojo.TbItemDesc">
+        <id column="item_id" property="itemId" jdbcType="BIGINT"/>
+        <result column="created" property="created" jdbcType="TIMESTAMP"/>
+        <result column="updated" property="updated" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap" extends="MiniResultMap" type="guo.ping.e3mall.pojo.TbItemDesc">
+        <result column="item_desc" property="itemDesc" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="guo.ping.e3mall.pojo.TbItemDesc">
+        INSERT INTO tb_item_desc
+        (item_id, item_desc, created, updated) VALUES (#{itemId}, #{itemDesc}, #{created}, #{updated})
+    </insert>
+
+    <select id="selectItemDescByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT * FROM tb_item_desc WHERE item_id = #{itemId}
+    </select>
+
+</mapper>
