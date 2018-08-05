@@ -19,6 +19,7 @@
 
     <!-- 集中定义依赖版本号 -->
     <properties>
+        <mysql.version>5.1.32</mysql.version>
         <mybatis.spring.boot.starter.version>1.2.2</mybatis.spring.boot.starter.version>
         <mybatis.paginator.version>1.2.15</mybatis.paginator.version>
         <druid.version>1.0.9</druid.version>
@@ -94,6 +95,12 @@
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper</artifactId>
                 <version>${pagehelper.version}</version>
+            </dependency>
+            <!-- MySql -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
             </dependency>
             <!-- 连接池 -->
             <dependency>
