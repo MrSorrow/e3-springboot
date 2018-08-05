@@ -19,12 +19,8 @@
 
     <!-- 集中定义依赖版本号 -->
     <properties>
-        <junit.version>4.12</junit.version>
-        <mybatis.version>3.2.8</mybatis.version>
-        <mybatis.spring.version>1.2.2</mybatis.spring.version>
+        <mybatis.spring.boot.starter.version>1.2.2</mybatis.spring.boot.starter.version>
         <mybatis.paginator.version>1.2.15</mybatis.paginator.version>
-        <mysql.version>5.1.32</mysql.version>
-        <slf4j.version>1.6.4</slf4j.version>
         <druid.version>1.0.9</druid.version>
         <httpclient.version>4.3.5</httpclient.version>
         <jstl.version>1.2</jstl.version>
@@ -43,7 +39,6 @@
         <zookeeper.version>3.4.7</zookeeper.version>
         <zkclient.version>0.1</zkclient.version>
         <activemq.version>5.11.2</activemq.version>
-        <freemarker.version>2.3.23</freemarker.version>
         <quartz.version>2.2.2</quartz.version>
         <springboot.version>2.0.4.RELEASE</springboot.version>
     </properties>
@@ -84,29 +79,11 @@
                 <artifactId>quartz</artifactId>
                 <version>${quartz.version}</version>
             </dependency>
-            <!-- 单元测试 -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- 日志处理 -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
             <!-- Mybatis -->
             <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis</artifactId>
-                <version>${mybatis.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mybatis</groupId>
-                <artifactId>mybatis-spring</artifactId>
-                <version>${mybatis.spring.version}</version>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.spring.boot.starter.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.miemiedev</groupId>
@@ -117,12 +94,6 @@
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper</artifactId>
                 <version>${pagehelper.version}</version>
-            </dependency>
-            <!-- MySql -->
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.version}</version>
             </dependency>
             <!-- 连接池 -->
             <dependency>
@@ -187,37 +158,15 @@
                 <artifactId>activemq-all</artifactId>
                 <version>${activemq.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.freemarker</groupId>
-                <artifactId>freemarker</artifactId>
-                <version>${freemarker.version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
-            <!-- 资源文件拷贝插件 -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <!-- java编译插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
