@@ -27,6 +27,8 @@
 
    除 *e3-parent* 外其他所有模块父工程都为 *e3-parent，* *e3-parent* 的父工程为 *spring-boot-starter-parent*。由于使用spring boot框架，web模块打包方式也为jar。
 
+   注：后面引入Dubbo时会进行变动。
+
 3. *e3-manager-web* 模块的maven插件配置利用：
 
    ```xml
@@ -207,7 +209,7 @@
    </dependency>
    ```
 
-5. 配置Dubbo的扫描包和注册中心地址（==由于官方bug扫描包配置是basePackages，而非base-packages==）；
+5. 配置Dubbo的扫描包和注册中心地址（<mark>由于官方bug扫描包配置是basePackages，而非base-packages</mark>）；
 
    ```yaml
    dubbo:
