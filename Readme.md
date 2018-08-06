@@ -304,5 +304,36 @@
 
 4. 运行模块（可能会报错关于 `toString` 方法，自己重写即可）。
 
+### 展示首页
 
+1. 引入Thymeleaf模板引擎依赖；
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-thymeleaf</artifactId>
+   </dependency>
+   ```
+
+2. 修改 `index.jsp` 为 `index.html`, 使用 Thymeleaf 标签改写相关内容；
+
+3. 默认Spring Boot给Spring MVC配置了欢迎页为 `template` 下的 `index.html`，需要额外扩展配置请求路径为 `/index` 、`/index.html` 时也展示首页。
+
+   ```java
+   @Configuration
+   public class MySpringMvcConfig implements WebMvcConfigurer {
+   
+       // WebMvcConfigurerAdapter在SpringBoot 2.x过时，不过还可以用
+       // 然而推荐的WebMvcConfigurationSupport 自动配置全部不再生效
+   
+       @Override
+       public void addViewControllers(ViewControllerRegistry registry) {
+           registry.addViewController("/index").setViewName("index");
+           registry.addViewController("/").setViewName("index");
+           registry.addViewController("/index.html").setViewName("index");
+       }
+   }
+   ```
+
+   
 
