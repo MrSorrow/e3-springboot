@@ -290,5 +290,19 @@
 
 10. 将 *e3-manager-pojo* 中的实体类实现序列化接口，便于Dubbo进行二进制传输。
 
+### Dubbo监控中心
+
+1. 下载dubbo-admin工程 [incubator-dubbo-ops](https://github.com/apache/incubator-dubbo-ops)；
+
+2. 主要需要的是其中的 *dubbo-admin* 模块，将其引入我们的项目。创建 *e3-dubbo-admin* 模块，依赖 *e3-parent*  模块，将 *dubbo-admin* 相关源码、资源拷贝至 *e3-dubbo-admin* 中；
+
+3. 修改 `resource` 下的 `application.properties` 配置文件，修改 zookeeper 注册中心地址；
+
+   ```properties
+   dubbo.registry.address=zookeeper://192.168.2.107:2181
+   ```
+
+4. 运行模块（可能会报错关于 `toString` 方法，自己重写即可）。
+
 
 
