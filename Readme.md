@@ -231,10 +231,8 @@
    import guo.ping.e3mall.manager.service.TbItemService;
    import guo.ping.e3mall.pojo.TbItem;
    import org.springframework.beans.factory.annotation.Autowired;
-   import org.springframework.stereotype.Component;
    
    @Service
-   @Component
    public class TbItemServiceImpl implements TbItemService {
    
        @Autowired
@@ -343,5 +341,9 @@
 
    ![查询商品列表](readme.assets/1533548371171.png)
 
-3. 
+3. 新增商品选择类目（查询商品分类）；
+
+   ![查询商品分类](readme.assets/1533549556456.png)
+
+4. 
 

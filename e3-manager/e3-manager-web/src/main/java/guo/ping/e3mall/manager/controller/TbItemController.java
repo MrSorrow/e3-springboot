@@ -29,4 +29,5 @@ public class TbItemController {
         EasyUIDataGridResult result = tbItemService.getItemList(page, rows);
         return result;
     }
+
 }
