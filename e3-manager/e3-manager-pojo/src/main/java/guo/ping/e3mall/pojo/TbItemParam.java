@@ -1,8 +1,9 @@
 package guo.ping.e3mall.pojo;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TbItemParam {
+public class TbItemParam implements Serializable {
     private Long id;
 
     private Long itemCatId;

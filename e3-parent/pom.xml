@@ -38,7 +38,7 @@
         <solrj.version>4.10.3</solrj.version>
         <dubbo.spring.boot.starter.version>0.2.0</dubbo.spring.boot.starter.version>
         <zookeeper.version>3.4.7</zookeeper.version>
-        <zkclient.version>0.1</zkclient.version>
+        <zk-client.version>0.1</zk-client.version>
         <activemq.version>5.11.2</activemq.version>
         <quartz.version>2.2.2</quartz.version>
         <springboot.version>2.0.4.RELEASE</springboot.version>
@@ -158,7 +158,7 @@
             <dependency>
                 <groupId>com.github.sgroschupf</groupId>
                 <artifactId>zkclient</artifactId>
-                <version>${zkclient.version}</version>
+                <version>${zk-client.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>

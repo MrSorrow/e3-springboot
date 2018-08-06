@@ -186,4 +186,107 @@
    docker run --name 容器名称 -p 2181:2181 --restart always -d zookeeper:3.4.13
    ```
 
+4. **服务发布者** *e3-manager-service* 导入相关依赖：[dubbo-spring-boot](https://github.com/apache/incubator-dubbo-spring-boot-project) [zkclient](http://mvnrepository.com/artifact/com.github.sgroschupf/zkclient/0.1)；
+
+   ```xml
+   <!--dubbo-->
+   <dependency>
+       <groupId>com.alibaba.boot</groupId>
+       <artifactId>dubbo-spring-boot-starter</artifactId>
+   </dependency>
+   <!--zkclient-->
+   <dependency>
+       <groupId>com.github.sgroschupf</groupId>
+       <artifactId>zkclient</artifactId>
+       <exclusions>
+           <exclusion>
+               <artifactId>log4j</artifactId>
+               <groupId>log4j</groupId>
+           </exclusion>
+       </exclusions>
+   </dependency>
+   ```
+
+5. 配置Dubbo的扫描包和注册中心地址（==由于官方bug扫描包配置是basePackages，而非base-packages==）；
+
+   ```yaml
+   dubbo:
+     application:
+       name: e3-manager-service
+     registry:
+       address: zookeeper://192.168.2.107:2181
+     scan:
+       basePackages: guo.ping.e3mall.manager.service.impl
+   ```
+
+6. 利用Dubbo的 `@Service` 注解发布服务；
+
+   ```java
+   package guo.ping.e3mall.manager.service.impl;
    
+   import com.alibaba.dubbo.config.annotation.Service;
+   import guo.ping.e3mall.manager.mapper.TbItemMapper;
+   import guo.ping.e3mall.manager.service.TbItemService;
+   import guo.ping.e3mall.pojo.TbItem;
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.stereotype.Component;
+   
+   @Service
+   @Component
+   public class TbItemServiceImpl implements TbItemService {
+   
+       @Autowired
+       private TbItemMapper tbItemMapper;
+   
+       @Override
+       public TbItem getItemById(Long itemId) {
+           return tbItemMapper.selectByPrimaryKey(itemId);
+       }
+   }
+   ```
+
+7. **服务消费者** *e3-manager-web* 同样引入相关依赖（同服务发布者依赖）；
+
+8. 配置Dubbo注册中心地址；
+
+   ```yaml
+   dubbo:
+     application:
+       name: e3-manager-web
+     registry:
+         address: zookeeper://192.168.2.107:2181
+   ```
+
+9. 利用 `@Reference` 引用服务。
+
+   ```java
+   package guo.ping.e3mall.manager.controller;
+   
+   import com.alibaba.dubbo.config.annotation.Reference;
+   import guo.ping.e3mall.manager.service.TbItemService;
+   import guo.ping.e3mall.pojo.TbItem;
+   import org.springframework.stereotype.Controller;
+   import org.springframework.web.bind.annotation.GetMapping;
+   import org.springframework.web.bind.annotation.PathVariable;
+   import org.springframework.web.bind.annotation.RequestMapping;
+   import org.springframework.web.bind.annotation.ResponseBody;
+   
+   @Controller
+   @RequestMapping("/item")
+   public class TbItemController {
+   
+       @Reference
+       private TbItemService tbItemService;
+   
+       @GetMapping("/{itemId}")
+       @ResponseBody
+       public TbItem hello(@PathVariable Long itemId) {
+           return tbItemService.getItemById(itemId);
+       }
+   }
+   ```
+
+   
+
+
+

@@ -1,0 +1,5 @@
+dubbo:
+  application:
+    name: e3-manager-web
+  registry:
+      address: zookeeper://192.168.2.107:2181
