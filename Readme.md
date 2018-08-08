@@ -432,5 +432,5 @@
 
    ![查询商品分类](readme.assets/1533549556456.png)
 
-4. 
+4. 图片上传（Spring Boot读取自定义properties）；
 

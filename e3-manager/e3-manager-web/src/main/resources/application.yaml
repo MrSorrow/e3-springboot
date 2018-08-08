@@ -1,5 +1,13 @@
+#dubbo config
 dubbo:
   application:
     name: e3-manager-web
   registry:
       address: zookeeper://192.168.18.129:2181
+#picture upload config
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1MB
+      max-request-size: 10MB
