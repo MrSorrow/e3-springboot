@@ -1,6 +1,7 @@
 package guo.ping.e3mall.manager.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import guo.ping.e3mall.common.pojo.E3Result;
 import guo.ping.e3mall.common.pojo.EasyUIDataGridResult;
 import guo.ping.e3mall.manager.service.TbItemService;
 import guo.ping.e3mall.pojo.TbItem;
@@ -27,6 +28,13 @@ public class TbItemController {
     @ResponseBody
     public EasyUIDataGridResult getItemList(Integer page, Integer rows) {
         EasyUIDataGridResult result = tbItemService.getItemList(page, rows);
+        return result;
+    }
+
+    @RequestMapping("/save")
+    @ResponseBody
+    public E3Result saveItem(TbItem item, String desc) {
+        E3Result result = tbItemService.addItem(item, desc);
         return result;
     }
 

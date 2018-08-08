@@ -3,12 +3,17 @@ package guo.ping.e3mall.manager.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import guo.ping.e3mall.common.pojo.E3Result;
 import guo.ping.e3mall.common.pojo.EasyUIDataGridResult;
+import guo.ping.e3mall.common.utils.IDUtils;
+import guo.ping.e3mall.manager.mapper.TbItemDescMapper;
 import guo.ping.e3mall.manager.mapper.TbItemMapper;
 import guo.ping.e3mall.manager.service.TbItemService;
 import guo.ping.e3mall.pojo.TbItem;
+import guo.ping.e3mall.pojo.TbItemDesc;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -16,6 +21,8 @@ public class TbItemServiceImpl implements TbItemService {
 
     @Autowired
     private TbItemMapper tbItemMapper;
+    @Autowired
+    private TbItemDescMapper tbItemDescMapper;
 
     @Override
     public TbItem getItemById(Long itemId) {
@@ -37,6 +44,32 @@ public class TbItemServiceImpl implements TbItemService {
         result.setRows(list);
 
         return result;
-
     }
+
+    @Override
+    public E3Result addItem(TbItem item, String desc) {
+        // 1、生成商品id
+        long itemId = IDUtils.genItemId();
+        // 2、补全TbItem对象的属性
+        item.setId(itemId);
+        //商品状态，1-正常，2-下架，3-删除
+        item.setStatus((byte) 1);
+        Date date = new Date();
+        item.setCreated(date);
+        item.setUpdated(date);
+        // 3、向商品表插入数据
+        tbItemMapper.insert(item);
+        // 4、创建一个TbItemDesc对象
+        TbItemDesc itemDesc = new TbItemDesc();
+        // 5、补全TbItemDesc的属性
+        itemDesc.setItemId(itemId);
+        itemDesc.setItemDesc(desc);
+        itemDesc.setCreated(date);
+        itemDesc.setUpdated(date);
+        // 6、向商品描述表插入数据
+        tbItemDescMapper.insert(itemDesc);
+        // 7、E3Result.ok()
+        return E3Result.ok();
+    }
+
 }

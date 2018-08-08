@@ -93,10 +93,17 @@
 3. 启动MySQL容器（设置密码、端口映射）；
 
    ```bash
-   docker run --name 实例名称 -p 3307:3306 -e MYSQL_ROOT_PASSWORD=密码 -d mysql:5.7.23
+   docker run --name 实例名称 -p 3307:3306 -e MYSQL_ROOT_PASSWORD=密码 -d mysql:5.7.23 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
    ```
 
-4. 客户端（Navicat）连接MySQL容器。
+4. 开启3306端口防火墙；
+
+   ```bash
+   firewall-cmd --zone=public --add-port=3306/tcp --permanent
+   firewall-cmd --reload
+   ```
+
+5. 客户端（Navicat）连接MySQL容器。
 
    ![连接MySQL容器](readme.assets/1533463518112.png)
 
@@ -433,4 +440,6 @@
    ![查询商品分类](readme.assets/1533549556456.png)
 
 4. 图片上传（Spring Boot读取自定义properties）；
+
+5. 商品添加数据库；
 
