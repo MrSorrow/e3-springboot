@@ -42,6 +42,7 @@
         <activemq.version>5.11.2</activemq.version>
         <quartz.version>2.2.2</quartz.version>
         <springboot.version>2.0.4.RELEASE</springboot.version>
+        <fastdfs.version>1.27</fastdfs.version>
     </properties>
 
     <dependencyManagement>
@@ -137,6 +138,12 @@
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
                 <version>${commons-fileupload.version}</version>
+            </dependency>
+            <!--fastdfs-->
+            <dependency>
+                <groupId>cn.bestwu</groupId>
+                <artifactId>fastdfs-client-java</artifactId>
+                <version>${fastdfs.version}</version>
             </dependency>
             <!-- Redis客户端 -->
             <dependency>

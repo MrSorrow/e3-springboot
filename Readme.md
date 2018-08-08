@@ -69,7 +69,20 @@
 
 ### 安装MySQL
 
-1. [安装Docker CE](https://blog.csdn.net/bskfnvjtlyzmv867/article/details/81044217)；
+1. [CentOS7安装Docker CE](https://docs.docker.com/install/linux/docker-ce/centos/)；
+
+   ```bash
+   # SET UP THE REPOSITORY AND INSTALL DOCKER CE
+   sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+   sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+   sudo yum install -y docker-ce
+   sudo systemctl enable docker
+   sudo systemctl start docker
+   # Manage Docker as a non-root user
+   sudo groupadd docker
+   sudo usermod -aG docker $USER
+   ＃log out and log back in
+   ```
 
 2. [拉取MySQL镜像](https://hub.docker.com/r/library/mysql/tags/)；
 
@@ -301,6 +314,80 @@
    ```
 
 4. 运行模块（可能会报错关于 `toString` 方法，自己重写即可）。
+
+### 图片服务器
+
+1. 了解[Nginx](https://blog.csdn.net/bskfnvjtlyzmv867/article/details/80682470)与[FastDFS](https://blog.csdn.net/bskfnvjtlyzmv867/article/details/80714435)；
+
+2. [拉取FastDFS镜像](https://hub.docker.com/r/morunchang/fastdfs/)；
+
+   ```bash
+   docker pull morunchang/fastdfs
+   ```
+
+3. 运行tracker实例；
+
+   ```bash
+   docker run -d --name taotao-fastdfs-tracker --net=host morunchang/fastdfs sh tracker.sh
+   ```
+
+4. 运行storage实例；
+
+   ```bash
+   # docker run -d --name storage --net=host -e TRACKER_IP=<your tracker server address>:22122 -e GROUP_NAME=<group name> morunchang/fastdfs sh storage.sh
+   docker run -d --name taotao-fastdfs-storage --net=host -e TRACKER_IP=192.168.2.107:22122 -e GROUP_NAME=group1 morunchang/fastdfs sh storage.sh
+   ```
+
+5. 修改nginx的配置，不拦截上传内容；
+
+   ```bash
+   # 1. 进入容器
+   docker exec -it taotao-fastdfs-storage  /bin/bash
+   # 2. 编辑nginx配置文件
+   vi /data/nginx/conf/nginx.conf
+   # 3. 修改以下内容
+   location /group1/M00 {
+        proxy_next_upstream http_502 http_504 error timeout invalid_header;
+        proxy_cache http-cache;
+        proxy_cache_valid  200 304 12h;
+        proxy_cache_key $uri$is_args$args;
+        proxy_pass http://fdfs_group1;
+        expires 30d;
+    }
+    # 4. 退出
+    exit
+    # 5. 重启storage容器
+    docker restart taotao-fastdfs-storage
+   ```
+
+   ![修改nginx的配置](readme.assets/1533552450826.png)
+
+6. 开启防火墙 80、8080、22122、23000四个端口；
+
+   ```bash
+   firewall-cmd --zone=public --add-port=80/tcp --permanent
+   firewall-cmd --zone=public --add-port=8080/tcp --permanent
+   firewall-cmd --zone=public --add-port=22122/tcp --permanent
+   firewall-cmd --zone=public --add-port=23000/tcp --permanent
+   firewall-cmd --reload
+   ```
+
+7. 测试图片上传（创建配置文件、添加上传工具类 `FastDFSClient.java` 和测试类 `FastDFSTest.java`）。
+
+   ```java
+   @RunWith(SpringRunner.class)
+   @SpringBootTest
+   public class FastDFSTest {
+       @Test
+       public void testFastDfsClient() throws Exception {
+           FastDFSClient fastDFSClient = new FastDFSClient("F:\\java\\e3-springboot\\e3-manager\\e3-manager-web\\src\\main\\resources\\conf\\fastdfs-client.conf");
+           String file = fastDFSClient.uploadFile("C:\\Users\\Guopin\\Pictures\\Screenpresso\\2018-05-17_16h21_07.png");
+           System.out.println(file);
+       }
+   }
+   ```
+
+   ![图片上传测试](readme.assets/1533734963606.png)
 
 ### 展示首页
 
