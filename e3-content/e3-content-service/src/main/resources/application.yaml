@@ -12,10 +12,10 @@ spring:
 
 dubbo:
   application:
-    name: e3-manager
+    name: e3-content
   registry:
     address: zookeeper://192.168.18.129:2181
   scan:
-    basePackages: guo.ping.e3mall.manager.service
+    basePackages: guo.ping.e3mall.content.service
   protocol:
-    port: 20880
+    port: 20881

@@ -441,15 +441,25 @@
 
 4. 图片上传（Spring Boot读取自定义properties）；
 
-5. 商品添加数据库；
+5. 商品添加数据库。
+
+### CMS系统
+
+1. 搭建 *e3-content* 聚合工程，包含两个模块: *e3-content-service*、*e3-content-web* (类似 *e3-manager*）;
+
+2. 查询、新增内容分类管理功能；
+
+3. 分类进行查询、新增内容。
+
+   ![CMS系统](readme.assets/1533820792583.png)
 
 ### 前台工程
 
-1. 搭建 *e3-portal-web* 工程，类似  *e3-manager-web* ；
+1. 搭建 *e3-portal-web* 工程，类似 *e3-manager-web* ；
 
 2. 修改前端模板页面；
 
-3. 类似  *e3-manager-web* 中配置Springboot展示首页；
+3. 类似 *e3-manager-web* 中配置Springboot展示首页；
 
    ![前台首页](readme.assets/1533782058073.png)
 
