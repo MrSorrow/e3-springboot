@@ -443,3 +443,12 @@
 
 5. 商品添加数据库；
 
+### 前台工程
+
+1. 搭建 *e3-portal-web* 工程，类似  *e3-manager-web* ；
+
+2. 修改前端模板页面；
+
+3. 类似  *e3-manager-web* 中配置Springboot展示首页；
+
+   ![前台首页](readme.assets/1533782058073.png)

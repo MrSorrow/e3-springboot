@@ -11,3 +11,6 @@ spring:
       enabled: true
       max-file-size: 1MB
       max-request-size: 10MB
+#tomcat config
+server:
+  port: 8081

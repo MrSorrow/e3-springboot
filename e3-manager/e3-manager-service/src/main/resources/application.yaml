@@ -1,6 +1,3 @@
-server:
-  port: 8081
-
 mybatis:
   config-location: classpath:mybatis/SqlMapConfig.xml
   mapper-locations: classpath:mybatis/mapper/*.xml
