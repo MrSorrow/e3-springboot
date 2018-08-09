@@ -396,6 +396,28 @@
 
    ![图片上传测试](readme.assets/1533734963606.png)
 
+### 安装Redis
+
+1. [了解 Redis 缓存](https://blog.csdn.net/bskfnvjtlyzmv867/article/details/80834857)；
+
+2. [拉取Redis镜像](https://hub.docker.com/_/redis/)；
+
+   ```bash
+   docker pull redis:3.2
+   ```
+
+3. 启动Redis容器；
+
+   ```bash
+   docker run -d -p 6379:6379 --name taotao-redis redis:3.2
+   ```
+
+4. 开启6379端口；
+
+5. 测试连接。
+
+   ![连接redis容器](readme.assets/1533822195893.png)
+
 ### 展示首页
 
 1. 引入Thymeleaf模板引擎依赖；
