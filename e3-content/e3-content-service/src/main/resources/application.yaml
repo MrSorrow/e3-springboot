@@ -9,6 +9,13 @@ spring:
     url: jdbc:mysql://192.168.18.129:3306/e3mall
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+# redis-single
+#    host: 192.168.18.129
+#    port: 6379
+# redis-cluster
+    cluster:
+      nodes: 192.168.18.129:6380,192.168.18.129:6381,192.168.18.129:6382
 
 dubbo:
   application:

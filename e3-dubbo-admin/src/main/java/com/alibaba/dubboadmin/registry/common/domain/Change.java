@@ -29,7 +29,7 @@ public class Change extends Entity {
     public static final String LOADBALANCE_TYPE = "L";  //loadbalance change
     public static final String CLUSTER_TYPE = "G";      //group change
     public static final String USER_TYPE = "U";         //user change
-    public static final String CONFIG_TYPE = "C";       //system config change
+    public static final String CONFIG_TYPE = "C";       //system conf change
     public static final String FEATURE_TYPE = "F";      //feature change
     public static final String LAYER_TYPE = "Y";      //layer change
     public static final String TEST_TYPE = "T";         //service test change

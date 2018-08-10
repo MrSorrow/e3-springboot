@@ -1,16 +1,16 @@
-#dubbo config
+#dubbo conf
 dubbo:
   application:
     name: e3-manager-web
   registry:
       address: zookeeper://192.168.18.129:2181
-#picture upload config
+#picture upload conf
 spring:
   servlet:
     multipart:
       enabled: true
       max-file-size: 1MB
       max-request-size: 10MB
-#tomcat config
+#tomcat conf
 server:
   port: 8081

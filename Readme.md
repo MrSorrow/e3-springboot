@@ -535,5 +535,9 @@
 
 3. 类似 *e3-manager-web* 中配置Springboot展示首页；
 
-   ![前台首页](readme.assets/1533782058073.png)
+4. CMS系统新增首页轮播图内容并插入数据库；
+
+5. 首页展示轮播图，添加redis缓存；
+
+   ![前台首页](readme.assets/1533904559336.png)
 
