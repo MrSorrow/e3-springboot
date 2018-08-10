@@ -420,6 +420,8 @@
 
    ![连接redis容器](readme.assets/1533822195893.png)
 
+   
+
    **安装集群版Redis**（一主两备）
 
    1. [了解Docker容器 ***--link*** 参数的意义](https://www.jianshu.com/p/21d66ca6115e)；
