@@ -398,6 +398,8 @@
 
 ### 安装Redis
 
+**安装单机版Redis**
+
 1. [了解 Redis 缓存](https://blog.csdn.net/bskfnvjtlyzmv867/article/details/80834857)；
 
 2. [拉取Redis镜像](https://hub.docker.com/_/redis/)；
@@ -417,6 +419,54 @@
 5. 测试连接。
 
    ![连接redis容器](readme.assets/1533822195893.png)
+
+   **安装集群版Redis**（一主两备）
+
+   1. [了解Docker容器 ***--link*** 参数的意义](https://www.jianshu.com/p/21d66ca6115e)；
+
+   2. 本地下载对应版本的redis压缩包（我是3.2的镜像），解压出 *redis.conf* 模板文件，拷贝三份 `redis-master.conf`、`redis-slave1.conf` 和 `redis-slave2.conf` 进行修改；
+
+      ```properties
+      # redis-master.conf 需要修改部分
+      daemonize yes
+      pidfile /var/run/redis.pid
+      bind 0.0.0.0 # 原来是bind 127.0.0.1
+      # redis-slave1.conf 需要修改部分
+      daemonize yes
+      pidfile /var/run/redis.pid
+      slaveof master 6379 # 注释打开
+      # redis-slave2.conf 需要修改部分
+      daemonize yes
+      pidfile /var/run/redis.pid
+      slaveof master 6379 # 注释打开
+      ```
+
+      其中，`slaveof master 6379` 默认被注释，需要我们打开注释修改，master在这里充当 *ip* 的角色，后面利用 *--link* 参数来配置redis主机的别名为 *master*，用以让从机进行识别。
+
+   3. 创建redis集群容器，一主两备，备份机通过 *--link* 连接主机；
+
+      ```bash
+      docker run -it -p 6380:6379 -v /usr/local/redis/redis-master.conf:/usr/local/etc/redis/redis.conf --name taotao-rediscluster-master redis:3.2 /bin/bash
+      docker run -it -p 6381:6379 -v /usr/local/redis/redis-slave1.conf:/usr/local/etc/redis/redis.conf --name taotao-rediscluster-slave1 --link taotao-rediscluster-master:master redis:3.2 /bin/bash
+      docker run -it -p 6382:6379 -v /usr/local/redis/redis-slave2.conf:/usr/local/etc/redis/redis.conf --name taotao-rediscluster-slave2 --link taotao-rediscluster-master:master redis:3.2 /bin/bash
+      ```
+
+      其中，`/usr/local/redis` 目录是我在宿主机存放三个配置文件的目录，启动好一个容器可以 `Ctrl+P` 和 `Ctrl+Q` 进行退出创建下一个容器。
+
+   4. 启动redis服务。先启动 `master` ，然后启动 `slaver` 。在三个容器中都输入：
+
+      ```bash
+      redis-server /usr/local/etc/redis/redis.conf
+      ```
+
+   5. 测试集群搭建情况。
+
+      ```bash
+      redis-cli
+      127.0.0.1:6379> info
+      ```
+
+      ![redis集群主机](readme.assets/1533868247889.png)
 
 ### 展示首页
 
