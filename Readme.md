@@ -398,77 +398,133 @@
 
 ### 安装Redis
 
+[了解 Redis 相关基础知识](https://blog.csdn.net/bskfnvjtlyzmv867/article/details/80834857)；
+
 **安装单机版Redis**
 
-1. [了解 Redis 缓存](https://blog.csdn.net/bskfnvjtlyzmv867/article/details/80834857)；
-
-2. [拉取Redis镜像](https://hub.docker.com/_/redis/)；
+1. [拉取Redis镜像](https://hub.docker.com/_/redis/)；
 
    ```bash
    docker pull redis:3.2
    ```
 
-3. 启动Redis容器；
+2. 启动Redis容器；
 
    ```bash
    docker run -d -p 6379:6379 --name taotao-redis redis:3.2
    ```
 
-4. 开启6379端口；
+3. 开启6379端口；
 
-5. 测试连接。
+4. 测试连接。
 
    ![连接redis容器](readme.assets/1533822195893.png)
 
-   
+**安装集群版Redis**（一主两备）
 
-   **安装集群版Redis**（一主两备）
+1. [了解Docker容器 ***--link*** 参数的意义](https://www.jianshu.com/p/21d66ca6115e)；
 
-   1. [了解Docker容器 ***--link*** 参数的意义](https://www.jianshu.com/p/21d66ca6115e)；
+2. 本地下载对应版本的redis压缩包（我是3.2的镜像），解压出 *redis.conf* 模板文件，拷贝三份 `redis-master.conf`、`redis-slave1.conf` 和 `redis-slave2.conf` 进行修改；
 
-   2. 本地下载对应版本的redis压缩包（我是3.2的镜像），解压出 *redis.conf* 模板文件，拷贝三份 `redis-master.conf`、`redis-slave1.conf` 和 `redis-slave2.conf` 进行修改；
+   ```properties
+   # redis-master.conf 需要修改部分
+   daemonize yes
+   pidfile /var/run/redis.pid
+   bind 0.0.0.0 # 原来是bind 127.0.0.1
+   # redis-slave1.conf 需要修改部分
+   daemonize yes
+   pidfile /var/run/redis.pid
+   slaveof master 6379 # 注释打开
+   # redis-slave2.conf 需要修改部分
+   daemonize yes
+   pidfile /var/run/redis.pid
+   slaveof master 6379 # 注释打开
+   ```
 
-      ```properties
-      # redis-master.conf 需要修改部分
-      daemonize yes
-      pidfile /var/run/redis.pid
-      bind 0.0.0.0 # 原来是bind 127.0.0.1
-      # redis-slave1.conf 需要修改部分
-      daemonize yes
-      pidfile /var/run/redis.pid
-      slaveof master 6379 # 注释打开
-      # redis-slave2.conf 需要修改部分
-      daemonize yes
-      pidfile /var/run/redis.pid
-      slaveof master 6379 # 注释打开
-      ```
+   其中，`slaveof master 6379` 默认被注释，需要我们打开注释修改，master在这里充当 *ip* 的角色，后面利用 *--link* 参数来配置redis主机的别名为 *master*，用以让从机进行识别。
 
-      其中，`slaveof master 6379` 默认被注释，需要我们打开注释修改，master在这里充当 *ip* 的角色，后面利用 *--link* 参数来配置redis主机的别名为 *master*，用以让从机进行识别。
+3. 创建redis集群容器，一主两备，备份机通过 *--link* 连接主机；
 
-   3. 创建redis集群容器，一主两备，备份机通过 *--link* 连接主机；
+   ```bash
+   docker run -it -p 6380:6379 -v /usr/local/redis/redis-master.conf:/usr/local/etc/redis/redis.conf --name taotao-rediscluster-master redis:3.2 /bin/bash
+   docker run -it -p 6381:6379 -v /usr/local/redis/redis-slave1.conf:/usr/local/etc/redis/redis.conf --name taotao-rediscluster-slave1 --link taotao-rediscluster-master:master redis:3.2 /bin/bash
+   docker run -it -p 6382:6379 -v /usr/local/redis/redis-slave2.conf:/usr/local/etc/redis/redis.conf --name taotao-rediscluster-slave2 --link taotao-rediscluster-master:master redis:3.2 /bin/bash
+   ```
 
-      ```bash
-      docker run -it -p 6380:6379 -v /usr/local/redis/redis-master.conf:/usr/local/etc/redis/redis.conf --name taotao-rediscluster-master redis:3.2 /bin/bash
-      docker run -it -p 6381:6379 -v /usr/local/redis/redis-slave1.conf:/usr/local/etc/redis/redis.conf --name taotao-rediscluster-slave1 --link taotao-rediscluster-master:master redis:3.2 /bin/bash
-      docker run -it -p 6382:6379 -v /usr/local/redis/redis-slave2.conf:/usr/local/etc/redis/redis.conf --name taotao-rediscluster-slave2 --link taotao-rediscluster-master:master redis:3.2 /bin/bash
-      ```
+   其中，`/usr/local/redis` 目录是我在宿主机存放三个配置文件的目录，启动好一个容器可以 `Ctrl+P` 和 `Ctrl+Q` 进行退出创建下一个容器。
 
-      其中，`/usr/local/redis` 目录是我在宿主机存放三个配置文件的目录，启动好一个容器可以 `Ctrl+P` 和 `Ctrl+Q` 进行退出创建下一个容器。
+4. 启动redis服务。先启动 `master` ，然后启动 `slaver` 。在三个容器中都输入：
 
-   4. 启动redis服务。先启动 `master` ，然后启动 `slaver` 。在三个容器中都输入：
+   ```bash
+   redis-server /usr/local/etc/redis/redis.conf
+   ```
 
-      ```bash
-      redis-server /usr/local/etc/redis/redis.conf
-      ```
+5. 测试集群搭建情况。
 
-   5. 测试集群搭建情况。
+   ```bash
+   redis-cli
+   127.0.0.1:6379> info
+   ```
 
-      ```bash
-      redis-cli
-      127.0.0.1:6379> info
-      ```
+   ![redis集群主机](readme.assets/1533868247889.png)
 
-      ![redis集群主机](readme.assets/1533868247889.png)
+### Solr检索
+
+[了解 Solr 服务相关基础知识](https://blog.csdn.net/bskfnvjtlyzmv867/article/details/80940089)
+
+**安装单机版Solr**
+
+1. [拉取 *Solr* 镜像](https://hub.docker.com/_/solr/)；
+
+   ```bash
+   docker pull solr:7.4.0
+   ```
+
+2. 启动 *Solr* 容器，即可访问 http://ip:8983/ ；
+
+   ```bash
+   docker run --name taotao-solr -d -p 8983:8983 -t solr:7.4.0
+   ```
+
+3. 新建 SolrCore，名称为 *collection1*；
+
+   ```bash
+   docker exec -it --user=solr taotao-solr bin/solr create_core -c collection1
+   ```
+
+4. 为了方便后续修改配置，将容器 solr 文件拷贝本地 `/usr/local/solr/`；
+
+   ```bash
+   docker cp taotao-solr:/opt/solr/ /usr/local/ # 容器拷贝宿主机
+   ```
+
+5. 设置中文分词 *smartcn*；
+
+   - 进入容器 `docker exec -it taotao-solr /bin/bash` ；
+
+   - 定位Solr7自带的中文分词器 *smartcn* 的jar包位置 `/opt/solr/contrib/analysis-extras/lucene-libs`；
+
+   - 进入创建的 *solrcore: collection1* 配置目录 `/opt/solr/server/solr/collection1/conf` ，修改 `solrconfig.xml` 添加 *smartcn* 包的 `lib` 标签；
+
+     ![修改路径添加jar包](readme.assets/1533956354821.png)
+
+   - 在 `managed-schema` 中添加中文分词的 FieldType ；
+
+     ![添加FieldType](readme.assets/1533956813132.png)
+
+   - 上传配置，重启solr服务。
+
+     ```bash
+     docker cp /usr/local/solr/server/solr/collection1/conf/solrconfig.xml taotao-solr:/opt/solr/server/solr/collection1/conf/solrconfig.xml
+     docker cp /usr/local/solr/server/solr/collection1/conf/managed-schema taotao-solr:/opt/solr/server/solr/collection1/conf/managed-schema
+     docker restart taotao-solr
+     ```
+
+     ![中文分词](readme.assets/1533958046199.png)
+
+6. 
+
+**安装集群版Solr**
 
 ### 展示首页
 
@@ -519,7 +575,7 @@
 
 ### CMS系统
 
-1. 搭建 *e3-content* 聚合工程，包含两个模块: *e3-content-service*、*e3-content-web* (类似 *e3-manager*）;
+1. 搭建 *e3-content* 聚合工程，包含两个模块: *e3-content-interface*、*e3-content-service* (类似 *e3-manager*）;
 
 2. 查询、新增内容分类管理功能；
 
@@ -540,3 +596,59 @@
 5. 首页展示轮播图，添加redis缓存；
 
    ![前台首页](readme.assets/1533904559336.png)
+
+### 搜索系统
+
+1. 搭建 *e3-search* 聚合工程，包含两个模块: *e3-search-interface*、*e3-content-service* (类似 *e3-content*）;
+
+2. 配置业务域，修改方法类似配置中文分词器；
+
+   ```xml
+   <field name="item_title" type="cn_text" indexed="true" stored="true"/>
+   <field name="item_sell_point" type="cn_text" indexed="true" stored="true"/>
+   <field name="item_price"  type="plong" indexed="true" stored="true"/>
+   <field name="item_image" type="string" indexed="false" stored="true" />
+   <field name="item_category_name" type="string" indexed="true" stored="true" />
+   
+   <field name="item_keywords" type="cn_text" indexed="true" stored="false" multiValued="true"/>
+   <copyField source="item_title" dest="item_keywords"/>
+   <copyField source="item_sell_point" dest="item_keywords"/>
+   <copyField source="item_category_name" dest="item_keywords"/>
+   ```
+
+3. 编写查询数据库商品信息的mapper接口实现；
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8" ?>
+   <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+   <mapper namespace="guo.ping.e3mall.search.mapper.SearchItemMapper" >
+       <select id="getItemList" resultType="guo.ping.e3mall.common.pojo.SearchItem">
+           SELECT
+           a.id,
+           a.title,
+           a.sell_point,
+           a.price,
+           a.image,
+           b.`name` category_name
+           FROM
+           `tb_item` a
+           LEFT JOIN tb_item_cat b ON a.cid = b.id
+           WHERE a.`status`=1
+       </select>
+   </mapper>
+   ```
+
+4. Maven导入 `spring-boot-starter-data-solr` ，`application.yaml` 配置 solr；
+
+   ```yaml
+   spring:
+     data:
+       solr:
+         host: http://192.168.18.129:9080/solr 
+   ```
+
+5. *e3-content-service* 进行发布服务，*e3-manager-web* 进行调用。
+
+   ![商品导入索引库](readme.assets/1533984530928.png)
+
+6. 
