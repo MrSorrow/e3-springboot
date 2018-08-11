@@ -6,12 +6,6 @@
     <div id="header">
         <div class="header_inner">
             <div class="logo">
-
-                <div class="index_topad" id="playLogo" style="">
-                    <a href="/html/activity/1472179566.html" target="_blank">
-                        <img src="/images/html/20160829181637762.gif">
-                    </a>
-                </div>
                 <a name="sfbest_hp_hp_head_logo" href="http://www.e3mall.cn" class="trackref logoleft">
                 </a>
                 <div class="logo-text">
@@ -21,7 +15,7 @@
             <div class="index_promo"></div>
             <div class="search">
                 <form action="http://localhost:8083/search.html" id="searchForm" name="query" method="GET">
-                    <input type="text" class="text keyword ac_input" name="keyword" id="keyword" value=""
+                    <input type="text" class="text keyword ac_input" name="keyword" id="keyword" th:value="${query}"
                            style="color: rgb(153, 153, 153);"
                            onkeydown="javascript:if(event.keyCode==13) search_keys('searchForm');" autocomplete="off">
                     <input type="button" value="" class="submit" onclick="search_keys('searchForm')">
@@ -47,7 +41,7 @@
                 </div>
             </div>
             <div class="shopingcar" id="topCart">
-                <s class="setCart"></s><a href="http://localhost:8089/cart/cart.html" class="t" rel="nofollow">我的购物车</a><b
+                <s class="setCart"></s><a href="http://cart.e3mall.cn" class="t" rel="nofollow">我的购物车</a><b
                     id="cartNum">0</b>
                 <span class="outline"></span>
                 <span class="blank"></span>
@@ -57,5 +51,11 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            function search_keys(formName) {
+                $('#' + formName).submit();
+            }
+        </script>
     </div>
 </div>
+</html>

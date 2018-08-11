@@ -522,9 +522,10 @@
 
      ![中文分词](readme.assets/1533958046199.png)
 
-6. 
 
 **安装集群版Solr**
+
+
 
 ### 展示首页
 
@@ -597,7 +598,7 @@
 
    ![前台首页](readme.assets/1533904559336.png)
 
-### 搜索系统
+### 搜索服务
 
 1. 搭建 *e3-search* 聚合工程，包含两个模块: *e3-search-interface*、*e3-content-service* (类似 *e3-content*）;
 
@@ -644,11 +645,19 @@
    spring:
      data:
        solr:
-         host: http://192.168.18.129:9080/solr 
+         host: http://192.168.18.129:9080/solr/collection1
    ```
 
 5. *e3-content-service* 进行发布服务，*e3-manager-web* 进行调用。
 
    ![商品导入索引库](readme.assets/1533984530928.png)
 
-6. 
+### 搜索前端
+
+1. 创建 *e3-search-web* 工程，类似 *e3-portal-web*；
+
+2. 利用 SolrJ 进行检索，发布搜索服务；
+
+3. *e3-search-web* 调用服务，前端进行搜索。
+
+   ![搜索摄像机关键词](readme.assets/1533998914027.png)
