@@ -19,7 +19,7 @@ public class IndexController {
     @Reference
     private ContentService contentService;
 
-    @RequestMapping("/index")
+    @RequestMapping({"/index", "/", "index.html"})
     public String showIndex(Model model) {
         List<TbContent> contentList = contentService.getContentList(CONTENT_BANNER_ID);
         model.addAttribute("ad1List", contentList);

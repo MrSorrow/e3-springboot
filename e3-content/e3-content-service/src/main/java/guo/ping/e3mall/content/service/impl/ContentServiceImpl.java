@@ -50,7 +50,7 @@ public class ContentServiceImpl implements ContentService {
     public List<TbContent> getContentList(Long cid) {
         // 查询缓存
         try {
-            List<TbContent> contents = (List<TbContent>) redisTemplate.opsForHash().get(CONTENT_KEY, cid+"");
+            List<TbContent> contents = (List<TbContent>) redisTemplate.opsForHash().get(CONTENT_KEY, cid.toString());
             System.out.println("read redis catch data...");
             if (!contents.isEmpty() && contents != null) {
                 return contents;
@@ -62,7 +62,7 @@ public class ContentServiceImpl implements ContentService {
         List<TbContent> list = contentMapper.getContentListByCategoryId(cid);
         // 向缓存中添加数据
         try {
-            redisTemplate.opsForHash().put(CONTENT_KEY, cid+"", list);
+            redisTemplate.opsForHash().put(CONTENT_KEY, cid.toString(), list);
             System.out.println("write redis catch data...");
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,6 +77,8 @@ public class ContentServiceImpl implements ContentService {
         content.setUpdated(new Date());
         //插入数据
         contentMapper.insertContent(content);
+        //缓存同步
+        redisTemplate.opsForHash().delete(CONTENT_KEY, content.getCategoryId().toString());
         return E3Result.ok();
     }
 }
