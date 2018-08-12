@@ -525,7 +525,134 @@
 
 **安装集群版Solr**
 
+1. CNM 新建 Docker 自定义网络；
 
+   ```bash
+   [root@localhost ~]# docker network create taotao-zks
+   8e3f9c7f672c38573609c294c7de5c13f69dbac1f03795bf415270ca4b07c41a
+   [root@localhost ~]# docker network ls
+   NETWORK ID          NAME                DRIVER              SCOPE
+   bdb405aa48bf        bridge              bridge              local
+   52dbb516d633        host                host                local
+   dd5c9b3d1fb8        none                null                local
+   8e3f9c7f672c        taotao-zks          bridge              local
+   ```
+
+2. Docker 容器搭建 ZooKeeper 集群（3个实例）；
+
+   ```bash
+   # 启动实例1
+   docker run -d \
+        --restart=always \
+        -v /usr/local/taotao-zks/zk1/data:/data \
+        -v /usr/local/taotao-zks/zk1/datalog:/datalog \
+        -p 2182:2181 \
+        -e ZOO_MY_ID=1 \
+        -e ZOO_SERVERS="server.1=taotao-zk1:2888:3888 server.2=taotao-zk2:2888:3888 server.3=taotao-zk3:2888:3888" \
+        --name=taotao-zk1 \
+        --net=taotao-zks \
+        --privileged \
+        zookeeper:3.4.13
+        
+   # 启动实例2
+   docker run -d \
+        --restart=always \
+        -v /usr/local/taotao-zks/zk2/data:/data \
+        -v /usr/local/taotao-zks/zk2/datalog:/datalog \
+        -p 2183:2181 \
+        -e ZOO_MY_ID=2 \
+        -e ZOO_SERVERS="server.1=taotao-zk1:2888:3888 server.2=taotao-zk2:2888:3888 server.3=taotao-zk3:2888:3888" \
+        --name=taotao-zk2 \
+        --net=taotao-zks \
+        --privileged \
+        zookeeper:3.4.13
+        
+   # 启动实例3
+   docker run -d \
+        --restart=always \
+        -v /usr/local/taotao-zks/zk3/data:/data \
+        -v /usr/local/taotao-zks/zk3/datalog:/datalog \
+        -p 2184:2181 \
+        -e ZOO_MY_ID=3 \
+        -e ZOO_SERVERS="server.1=taotao-zk1:2888:3888 server.2=taotao-zk2:2888:3888 server.3=taotao-zk3:2888:3888" \
+        --name=taotao-zk3 \
+        --net=taotao-zks \
+        --privileged \
+        zookeeper:3.4.13
+   ```
+
+3. 查看ZooKeeper集群搭建状态。
+
+   ```bash
+   # 宿主机执行命令 可能需要先安装nc(yum -y install nc)
+   echo stat|nc 127.0.0.1 2182
+   echo stat|nc 127.0.0.1 2183
+   echo stat|nc 127.0.0.1 2184
+   ```
+
+4. 搭建 Solr Cloud（4个实例）；
+
+   ```bash
+   # 启动实例1
+   docker run --name taotao-solrcloud1 --net=taotao-zks -d -p 8984:8983 solr:7.4.0 bash -c '/opt/solr/bin/solr start -f -z taotao-zk1:2181,taotao-zk2:2181,taotao-zk3:2181'
+   
+   # 启动实例2
+   docker run --name taotao-solrcloud2 --net=taotao-zks -d -p 8985:8983 solr:7.4.0 bash -c '/opt/solr/bin/solr start -f -z taotao-zk1:2181,taotao-zk2:2181,taotao-zk3:2181'
+   
+   # 启动实例3
+   docker run --name taotao-solrcloud3 --net=taotao-zks -d -p 8986:8983 solr:7.4.0 bash -c '/opt/solr/bin/solr start -f -z taotao-zk1:2181,taotao-zk2:2181,taotao-zk3:2181'
+   
+   # 启动实例4
+   docker run --name taotao-solrcloud4 --net=taotao-zks -d -p 8987:8983 solr:7.4.0 bash -c '/opt/solr/bin/solr start -f -z taotao-zk1:2181,taotao-zk2:2181,taotao-zk3:2181'
+   ```
+
+5. 验证搭建结果，访问 http://ip:8984/ 、http://ip:8985/ 、http://ip:8986/ 或 http://ip:8987/；
+
+   ![6个容器](readme.assets/1534029865080.png)
+
+6. 上传配置文件 conf 到 ZooKeeper 中心；
+
+   ```bash
+   docker exec -it taotao-solrcloud1 /opt/solr/server/scripts/cloud-scripts/zkcli.sh -zkhost taotao-zk1:2181,taotao-zk2:2181,taotao-zk3:2181 -cmd upconfig -confdir /opt/solr/server/solr/configsets/sample_techproducts_configs/conf -confname taotao-solrcloud-conf
+   ```
+
+7. 查询zookeeper集群是否包含配置文件；
+
+   ```bash
+   docker exec -it taotao-zk1 /bin/bash
+   bash-4.4# ./bin/zkCli.sh -server taotao-zk2:2181
+   Connecting to taotao-zk2:2181
+   ---日志省略---
+   [zk: taotao-zk2:2181(CONNECTED) 0] ls /configs/taotao-solrcloud-conf
+   [currency.xml, mapping-FoldToASCII.txt, managed-schema, protwords.txt, synonyms.txt, stopwords.txt, _schema_analysis_synonyms_english.json, velocity, update-script.js, _schema_analysis_stopwords_english.json, solrconfig.xml, elevate.xml, clustering, _rest_managed.json, mapping-ISOLatin1Accent.txt, spellings.txt, xslt, lang, params.json]
+   ```
+
+   请求：[http://192.168.18.129:8987/solr/admin/configs?action=LIST](http://192.168.18.129:8987/solr/admin/configs?action=LIST)
+
+8. 更新配置文件；
+
+   ```bash
+   # 拷贝宿主机修改的目录上传至solr集群中某一节点
+   docker cp /usr/local/solr/server/solr/collection1/conf/solrconfig.xml taotao-solrcloud1:/opt/solr/server/solr/configsets/sample_techproducts_configs/conf/solrconfig.xml
+   docker cp /usr/local/solr/server/solr/collection1/conf/managed-schema taotao-solrcloud1:/opt/solr/server/solr/configsets/sample_techproducts_configs/conf/managed-schema
+   
+   # 利用putfile命令更新集群的配置文件
+   docker exec -it taotao-solrcloud1 /opt/solr/server/scripts/cloud-scripts/zkcli.sh -zkhost taotao-zk1:2181,taotao-zk2:2181,taotao-zk3:2181 -cmd putfile /configs/taotao-solrcloud-conf/solrconfig.xml /opt/solr/server/solr/configsets/sample_techproducts_configs/conf/solrconfig.xml
+   docker exec -it taotao-solrcloud1 /opt/solr/server/scripts/cloud-scripts/zkcli.sh -zkhost taotao-zk1:2181,taotao-zk2:2181,taotao-zk3:2181 -cmd putfile /configs/taotao-solrcloud-conf/managed-schema /opt/solr/server/solr/configsets/sample_techproducts_configs/conf/managed-schema
+   ```
+
+9. 创建collection，分两片，每片一主一备。浏览器输入请求：
+
+   - [http://192.168.18.129:8987/solr/admin/collections?action=CREATE&name=collection1&numShards=2&replicationFactor=2 ](http://192.168.18.129:8987/solr/admin/collections?action=CREATE&name=collection1&numShards=2&replicationFactor=2)
+   - [http://192.168.18.129:8987/solr/admin/collections?action=CREATE&name=collection2&numShards=2&replicationFactor=2&collection.configName=taotao-solrcloud-conf ](http://192.168.18.129:8987/solr/admin/collections?action=CREATE&name=collection2&numShards=2&replicationFactor=2&collection.configName=taotao-solrcloud-conf)
+
+   ![1534042027961](readme.assets/1534042027961.png)
+
+10. 重新载入ZooKeeper更新后的配置文件。
+
+    [http://192.168.18.129:8987/solr/admin/collections?action=RELOAD&name=collection1](http://192.168.18.129:8987/solr/admin/collections?action=RELOAD&name=collection1)
+
+    [http://192.168.18.129:8987/solr/admin/collections?action=RELOAD&name=collection2](http://192.168.18.129:8987/solr/admin/collections?action=RELOAD&name=collection2)
 
 ### 展示首页
 
