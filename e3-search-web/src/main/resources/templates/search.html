@@ -48,7 +48,7 @@
                 <li th:each="item : ${itemList}">
                     <div class="l-wrap">
                         <div class="pic">
-                            <a class="trackref" th:href="|http://localhost:8086/item/${item.id}.html|" title=""
+                            <a class="trackref" th:href="|http://localhost:8084/item/${item.id}.html|" title=""
                                target="_blank">
                                 <img th:src="${item.images[0]}" style="display:inline"/>
                             </a>
@@ -62,11 +62,11 @@
                             <span class="active" style="">直降</span>
                         </div>
                         <div class="title-a">
-                            <a class="trackref presaleSign_225865" th:href="|http://localhost:8086/item/${item.id}.html|"
+                            <a class="trackref presaleSign_225865" th:href="|http://localhost:8084/item/${item.id}.html|"
                                target="_blank" th:utext="${item.title}"></a>
                         </div>
                         <div class="title-b" style=""><a class="trackref"
-                                                         th:href="|http://localhost:8086/item/${item.id}.html|"
+                                                         th:href="|http://localhost:8084/item/${item.id}.html|"
                                                          target="_blank">[[${sell_point}]]</a></div>
                         <div class="comment">
                             <div class="owner_shop_list">自营</div>
