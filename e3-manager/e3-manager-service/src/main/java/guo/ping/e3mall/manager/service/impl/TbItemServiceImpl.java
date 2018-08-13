@@ -11,7 +11,9 @@ import guo.ping.e3mall.manager.mapper.TbItemMapper;
 import guo.ping.e3mall.manager.service.TbItemService;
 import guo.ping.e3mall.pojo.TbItem;
 import guo.ping.e3mall.pojo.TbItemDesc;
+import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsMessagingTemplate;
 
 import java.util.Date;
 import java.util.List;
@@ -23,6 +25,8 @@ public class TbItemServiceImpl implements TbItemService {
     private TbItemMapper tbItemMapper;
     @Autowired
     private TbItemDescMapper tbItemDescMapper;
+    @Autowired
+    private JmsMessagingTemplate jmsMessagingTemplate;
 
     @Override
     public TbItem getItemById(Long itemId) {
@@ -46,6 +50,12 @@ public class TbItemServiceImpl implements TbItemService {
         return result;
     }
 
+    /**
+     * 后台管理添加商品至数据库
+     * @param item 商品
+     * @param desc 商品描述
+     * @return
+     */
     @Override
     public E3Result addItem(TbItem item, String desc) {
         // 1、生成商品id
@@ -68,7 +78,10 @@ public class TbItemServiceImpl implements TbItemService {
         itemDesc.setUpdated(date);
         // 6、向商品描述表插入数据
         tbItemDescMapper.insert(itemDesc);
-        // 7、E3Result.ok()
+        // 7、发送消息队列，通知新增商品id
+        ActiveMQTopic itemAddTopic = new ActiveMQTopic("itemAddTopic");
+        jmsMessagingTemplate.convertAndSend(itemAddTopic, item.getId());
+        // 8、E3Result.ok()
         return E3Result.ok();
     }
 

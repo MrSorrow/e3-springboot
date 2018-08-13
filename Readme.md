@@ -788,3 +788,179 @@
 3. *e3-search-web* 调用服务，前端进行搜索。
 
    ![搜索摄像机关键词](readme.assets/1533998914027.png)
+
+### ActiveMQ
+
+1. [拉取 ActiveMQ 镜像](https://hub.docker.com/r/webcenter/activemq/)；
+
+   ```bash
+   docker pull webcenter/activemq:5.14.3
+   ```
+
+2. 启动容器实例；
+
+   ```bash
+   docker run -d --name taotao-activemq -p 61616:61616 -p 8161:8161 webcenter/activemq:5.14.3
+   ```
+
+3. 宿主机开启防火墙端口8161和61616；
+
+4. 访问 [http://ip:8161](http://ip:8161) 进入管理页面，默认登录账户密码均为 *admin*；
+
+5. 商品添加服务 *e3-manager-service* 和搜索服务模块 *e3-search-service* 引入 ActiveMQ；
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-activemq</artifactId>
+   </dependency>
+   <!--  启用JMS 的池化-->
+   <dependency>
+       <groupId>org.apache.activemq</groupId>
+       <artifactId>activemq-pool</artifactId>
+   </dependency>
+   ```
+
+6. 添加 ActiveMQ 配置文件；
+
+   ```yaml
+   spring:
+     activemq:
+       user: admin
+       password: admin
+       broker-url: tcp://192.168.18.129:61616
+       pool:
+         enabled: true
+         max-connections: 50
+       packages:
+         trust-all: false
+   ```
+
+7. 商品添加完成时发送 *Topic* 消息；
+
+   ```java
+   @Service
+   public class TbItemServiceImpl implements TbItemService {
+       
+       ...
+   
+       @Autowired
+       private JmsMessagingTemplate jmsMessagingTemplate;
+   
+       /**
+        * 后台管理添加商品至数据库
+        */
+       @Override
+       public E3Result addItem(TbItem item, String desc) {
+           // 向商品描述表插入数据
+           ...
+           tbItemDescMapper.insert(item);
+           // 发送消息队列，通知新增商品id
+           ActiveMQTopic itemAddTopic = new ActiveMQTopic("itemAddTopic");
+           jmsMessagingTemplate.convertAndSend(itemAddTopic, item.getId());
+           
+           return E3Result.ok();
+       }
+   }
+   ```
+
+8. 搜索服务工程接收 *Topic* 消息。
+
+   更改监听配置，自定义监听工厂（包含 *Queue* 和 *Topic* ）：
+
+   ```java
+   package guo.ping.e3mall.search.config;
+   
+   import org.springframework.context.annotation.Bean;
+   import org.springframework.context.annotation.Configuration;
+   import org.springframework.jms.annotation.EnableJms;
+   import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
+   import org.springframework.jms.config.JmsListenerContainerFactory;
+   
+   import javax.jms.ConnectionFactory;
+   
+   @Configuration
+   @EnableJms
+   public class MyJmsConfig {
+   
+       @Bean("jmsQueueListenerContainerFactory")
+       public JmsListenerContainerFactory jmsQueueListenerContainerFactory(ConnectionFactory connectionFactory) {
+           DefaultJmsListenerContainerFactory factory =
+                   new DefaultJmsListenerContainerFactory();
+           factory.setConnectionFactory(connectionFactory);
+           //设置连接数
+           factory.setConcurrency("3-10");
+           //重连间隔时间
+           factory.setRecoveryInterval(1000L);
+           factory.setPubSubDomain(false);
+           return factory;
+   
+       }
+   
+       @Bean("jmsTopicListenerContainerFactory")
+       public JmsListenerContainerFactory jmsTopicListenerContainerFactory(ConnectionFactory connectionFactory) {
+           DefaultJmsListenerContainerFactory factory =
+                   new DefaultJmsListenerContainerFactory();
+           factory.setConnectionFactory(connectionFactory);
+           //重连间隔时间
+           factory.setPubSubDomain(true);
+           return factory;
+   
+       }
+   }
+   ```
+
+   使用 `@JmsListener` 进行监听的，设置工厂为上面注入的 Topic 工厂：
+
+   ```java
+   package guo.ping.e3mall.search.message;
+   
+   import guo.ping.e3mall.common.pojo.SearchItem;
+   import guo.ping.e3mall.search.mapper.SearchItemMapper;
+   import org.apache.solr.client.solrj.SolrClient;
+   import org.apache.solr.client.solrj.SolrServerException;
+   import org.apache.solr.common.SolrInputDocument;
+   import org.springframework.beans.factory.annotation.Autowired;
+   import org.springframework.jms.annotation.JmsListener;
+   import org.springframework.stereotype.Component;
+   
+   import java.io.IOException;
+   
+   @Component
+   public class ItemAddMessageReceiver {
+   
+       @Autowired
+       private SearchItemMapper searchItemMapper;
+       @Autowired
+       private SolrClient solrClient;
+   
+       @JmsListener(destination = "itemAddTopic", containerFactory = "jmsTopicListenerContainerFactory")
+       public void itemAddReceiver(Long msg) {
+           try {
+               // 0、等待1s让e3-manager-service提交完事务，商品添加成功
+               Thread.sleep(1000);
+               // 1、根据商品id查询商品信息
+               SearchItem searchItem = searchItemMapper.getItemById(msg);
+               // 2、创建一SolrInputDocument对象。
+               SolrInputDocument document = new SolrInputDocument();
+               // 3、使用SolrServer对象写入索引库。
+               document.addField("id", searchItem.getId());
+               document.addField("item_title", searchItem.getTitle());
+               document.addField("item_sell_point", searchItem.getSell_point());
+               document.addField("item_price", searchItem.getPrice());
+               document.addField("item_image", searchItem.getImage());
+               document.addField("item_category_name", searchItem.getCategory_name());
+               // 5、向索引库中添加文档。
+               solrClient.add(document);
+               solrClient.commit();
+           } catch (SolrServerException e) {
+               e.printStackTrace();
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
+   }
+   ```
+
+### 商品详情
+

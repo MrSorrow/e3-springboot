@@ -14,4 +14,18 @@
         LEFT JOIN tb_item_cat b ON a.cid = b.id
         WHERE a.`status`=1
     </select>
+    <select id="getItemById" parameterType="long" resultType="guo.ping.e3mall.common.pojo.SearchItem">
+        SELECT
+        a.id,
+        a.title,
+        a.sell_point,
+        a.price,
+        a.image,
+        b.`name` category_name
+        FROM
+        `tb_item` a
+        LEFT JOIN tb_item_cat b ON a.cid = b.id
+        WHERE a.`status`=1
+        AND a.id=#{itemId}
+    </select>
 </mapper>

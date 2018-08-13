@@ -63,7 +63,7 @@
                         </div>
                         <div class="title-a">
                             <a class="trackref presaleSign_225865" th:href="|http://localhost:8086/item/${item.id}.html|"
-                               target="_blank">[[${item.title}]]</a>
+                               target="_blank" th:utext="${item.title}"></a>
                         </div>
                         <div class="title-b" style=""><a class="trackref"
                                                          th:href="|http://localhost:8086/item/${item.id}.html|"
