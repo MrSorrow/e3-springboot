@@ -19,5 +19,4 @@ public class SearchItemController {
         E3Result result = searchItemService.importItems();
         return result;
     }
-
 }

@@ -1,10 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ page trimDirectiveWhitespaces="true"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta http-equiv="pragma" content="no-cache" />
 <meta http-equiv="cache-control" content="no-cache" />
@@ -18,8 +13,10 @@
 <link rel="stylesheet" type="text/css" href="/css/all.css?v=20160713" />
 <link rel="stylesheet" type="text/css" href="/css/jquery.alerts.css" />
 <title>出错了 -宜立方商城</title>
-<jsp:include page="../commons/header.jsp" />
-<jsp:include page="../commons/mainmenu.jsp" />
+<!-- header start -->
+<div th:replace="./commons/header::header"></div>
+<!-- header end -->
+<div th:replace="./commons/mainmenu::mainmenu"></div>
 <body>
 	<div id="main">
 		<!----submenu------->
@@ -41,7 +38,7 @@
 		</div>
 	</div>
 	<!-- footer start -->
-	<jsp:include page="../commons/footer.jsp" />
+	<div th:replace="./commons/footer::footer"></div>
 	<!-- footer end -->
 </body>
 </html>

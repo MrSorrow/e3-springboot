@@ -6,6 +6,7 @@ import guo.ping.e3mall.common.pojo.SearchItem;
 import guo.ping.e3mall.search.mapper.SearchItemMapper;
 import guo.ping.e3mall.search.service.SearchItemService;
 import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.common.SolrInputDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +19,7 @@ public class SearchItemServiceImpl implements SearchItemService {
     private SearchItemMapper itemMapper;
 
     @Autowired
+//    private CloudSolrClient solrClient;
     private SolrClient solrClient;
 
     @Override
