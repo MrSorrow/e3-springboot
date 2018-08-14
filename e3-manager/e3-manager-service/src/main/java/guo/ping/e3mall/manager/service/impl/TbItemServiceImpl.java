@@ -13,10 +13,13 @@ import guo.ping.e3mall.pojo.TbItem;
 import guo.ping.e3mall.pojo.TbItemDesc;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jms.core.JmsMessagingTemplate;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class TbItemServiceImpl implements TbItemService {
@@ -27,10 +30,73 @@ public class TbItemServiceImpl implements TbItemService {
     private TbItemDescMapper tbItemDescMapper;
     @Autowired
     private JmsMessagingTemplate jmsMessagingTemplate;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+    @Value("${ITEM_INFO_KEY}")
+    private String ITEM_INFO_KEY;
+    @Value("${ITEM_INFO_BASE_KEY}")
+    private String ITEM_INFO_BASE_KEY;
+    @Value("${ITEM_INFO_DESC_KEY}")
+    private String ITEM_INFO_DESC_KEY;
+    @Value("${ITEM_INFO_EXPIRE}")
+    private Integer ITEM_INFO_EXPIRE;
 
     @Override
     public TbItem getItemById(Long itemId) {
-        return tbItemMapper.selectByPrimaryKey(itemId);
+        // 查询缓存
+        try {
+            TbItem tbItem = (TbItem) redisTemplate.opsForValue().get(ITEM_INFO_KEY + ":" + itemId + ":" + ITEM_INFO_BASE_KEY);
+            if (tbItem != null) {
+                System.out.println("read redis item base information...");
+                return tbItem;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 查询数据库
+        TbItem tbItem = tbItemMapper.selectByPrimaryKey(itemId);
+        if (tbItem != null) {
+            try {
+                // 把数据保存到缓存
+                redisTemplate.opsForValue().set(ITEM_INFO_KEY + ":" + itemId + ":" + ITEM_INFO_BASE_KEY, tbItem);
+                // 设置缓存的有效期
+                redisTemplate.expire(ITEM_INFO_KEY + ":" + itemId + ":" + ITEM_INFO_BASE_KEY, ITEM_INFO_EXPIRE, TimeUnit.HOURS);
+                System.out.println("write redis item base information...");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return tbItem;
+        }
+        return null;
+    }
+
+    @Override
+    public TbItemDesc getItemDescById(Long itemId) {
+        // 查询缓存
+        try {
+            TbItemDesc itemDesc = (TbItemDesc) redisTemplate.opsForValue().get(ITEM_INFO_KEY + ":" + itemId + ":" + ITEM_INFO_DESC_KEY);
+            if (itemDesc != null) {
+                System.out.println("read redis item desc information...");
+                return itemDesc;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 查询数据库
+        TbItemDesc itemDesc = tbItemDescMapper.selectItemDescByPrimaryKey(itemId);
+        if (itemDesc != null) {
+            // 把数据保存到缓存
+            try {
+                redisTemplate.opsForValue().set(ITEM_INFO_KEY + ":" + itemId + ":" + ITEM_INFO_DESC_KEY, itemDesc);
+                redisTemplate.expire(ITEM_INFO_KEY + ":" + itemId + ":" + ITEM_INFO_DESC_KEY, ITEM_INFO_EXPIRE, TimeUnit.HOURS);
+                System.out.println("write redis item desc information...");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return itemDesc;
+        }
+        return null;
     }
 
     @Override
@@ -52,6 +118,7 @@ public class TbItemServiceImpl implements TbItemService {
 
     /**
      * 后台管理添加商品至数据库
+     *
      * @param item 商品
      * @param desc 商品描述
      * @return
@@ -83,11 +150,5 @@ public class TbItemServiceImpl implements TbItemService {
         jmsMessagingTemplate.convertAndSend(itemAddTopic, item.getId());
         // 8、E3Result.ok()
         return E3Result.ok();
-    }
-
-    @Override
-    public TbItemDesc getItemDescById(Long itemId) {
-        TbItemDesc itemDesc = tbItemDescMapper.selectItemDescByPrimaryKey(itemId);
-        return itemDesc;
     }
 }

@@ -10,6 +10,11 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 
+  redis:
+      timeout: 5000
+      host: 192.168.18.129
+      port: 6379
+
   activemq:
         user: admin
         password: admin
