@@ -156,7 +156,7 @@
        type: com.alibaba.druid.pool.DruidDataSource
    ```
 
-### 整合测试
+### 工程测试
 
 1. 将所有mapper接口和xml文件拷贝至 *e3-manager-dao* 工程下；
 
@@ -974,4 +974,54 @@
 
    ![商品详情页面](readme.assets/1534205759032.png)
 
+### 页面静态化
+
+1. 利用 Thymeleaf 进行商品详情页面的静态化；
+
+2. 引入 ActiveMQ 监听添加商品消息，并生成页面；
+
+   ```java
+   /**
+    * 接收后台添加商品消息，生成商品详情页面
+    */
+   @Component
+   public class GeneratePageMessageReceiver {
    
+       @Reference
+       private TbItemService itemService;
+       @Autowired
+       private SpringTemplateEngine springTemplateEngine;
+       @Value("${TEMPLATE_NAME}")
+       private String TEMPLATE_NAME;
+       @Value("${TEMPLATE_FILEPATH}")
+       private String TEMPLATE_FILEPATH;
+   
+       @JmsListener(destination = "itemAddTopic", containerFactory = "jmsTopicListenerContainerFactory")
+       public void itemAddReceiver(Long itemId) {
+           try {
+               // 0、等待1s让e3-manager-service提交完事务，商品添加成功
+               Thread.sleep(1000);
+               // 1、准备商品数据
+               TbItem tbItem = itemService.getItemById(itemId);
+               TbItemDesc itemDesc = itemService.getItemDescById(itemId);
+               Item item = new Item(tbItem);
+               // 2、构造上下文(Model)
+               Context context = new Context();
+               context.setVariable("item", item);
+               context.setVariable("itemDesc", itemDesc);
+               // 3、生成页面
+               FileWriter writer = new FileWriter(TEMPLATE_FILEPATH + itemId + ".html");
+               springTemplateEngine.process(TEMPLATE_NAME, context, writer);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
+   }
+   ```
+
+3. 利用 Nginx 服务器，实现静态页面访问。
+
+### 单点登录
+
