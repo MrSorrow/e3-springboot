@@ -19,6 +19,7 @@
 
     <!-- 集中定义依赖版本号 -->
     <properties>
+        <servlet-api.version>2.5</servlet-api.version>
         <mysql.version>5.1.32</mysql.version>
         <mybatis.spring.boot.starter.version>1.2.2</mybatis.spring.boot.starter.version>
         <mybatis.paginator.version>1.2.15</mybatis.paginator.version>
@@ -62,6 +63,13 @@
                 <groupId>commons-net</groupId>
                 <artifactId>commons-net</artifactId>
                 <version>${commons-net.version}</version>
+            </dependency>
+            <!--servlet-->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>${servlet-api.version}</version>
+                <scope>provided</scope>
             </dependency>
             <!-- httpclient -->
             <dependency>

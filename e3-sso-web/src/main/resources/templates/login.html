@@ -137,8 +137,8 @@
     </p>
 </div>
 <!-- /footer -->
-<script type="text/javascript">
-    var redirectUrl = "${redirect}";
+<script type="text/javascript" th:inline="javascript">
+    var redirectUrl = [[${redirect}]];
     var LOGIN = {
         checkInput: function () {
             $("#sfbestNameErr").attr("class", "").html("").prev().attr("class", "border");
@@ -158,8 +158,9 @@
         doLogin: function () {
             $.post("/user/login", $("#formlogin").serialize(), function (data) {
                 if (data.status == 200) {
+                    console.log(redirectUrl);
                     jAlert('登录成功！', "提示", function () {
-                        if (redirectUrl == "") {
+                        if (redirectUrl == "" || redirectUrl == null) {
                             location.href = "http://localhost:8082";
                         } else {
                             location.href = redirectUrl;

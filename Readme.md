@@ -1,6 +1,6 @@
 # SpringBoot+Docker重构淘淘商城
 
-![](https://img.shields.io/badge/Java-1.8-blue.svg) ![](https://img.shields.io/badge/SpringBoot-2.0.4-blue.svg) ![](https://img.shields.io/badge/Dubbo-2.6.2-blue.svg) ![](https://img.shields.io/badge/ZooKeeper-3.4.13-blue.svg) ![](https://img.shields.io/badge/MySQL-5.7.23-blue.svg) ![](https://img.shields.io/badge/Tomcat-8.5-blue.svg) ![](https://img.shields.io/badge/Maven-3.3.9-blue.svg) ![](https://img.shields.io/badge/IDEA-2017.2-green.svg) ![](https://img.shields.io/badge/Windows-10-green.svg) ![](https://img.shields.io/badge/CentOS-7.4-green.svg) ![](https://img.shields.io/badge/Docker-18.06CE-green.svg) 
+![](https://img.shields.io/badge/Java-1.8-blue.svg) ![](https://img.shields.io/badge/SpringBoot-2.0.4-blue.svg) ![](https://img.shields.io/badge/Dubbo-2.6.2-blue.svg) ![](https://img.shields.io/badge/ZooKeeper-3.4.13-blue.svg) ![](https://img.shields.io/badge/Solr-7.4-blue.svg) ![](https://img.shields.io/badge/ActiveMQ-5.14.3-blue.svg) ![](https://img.shields.io/badge/Thymeleaf-3.0.9-blue.svg) ![](https://img.shields.io/badge/FastDFS-5.05-blue.svg) ![](https://img.shields.io/badge/MySQL-5.7.23-blue.svg) ![](https://img.shields.io/badge/Redis-3.2-blue.svg) ![](https://img.shields.io/badge/Tomcat-8.5-green.svg) ![](https://img.shields.io/badge/Maven-3.3.9-green.svg) ![](https://img.shields.io/badge/IDEA-2017.2-green.svg) ![](https://img.shields.io/badge/Windows-10-green.svg) ![](https://img.shields.io/badge/CentOS-7.4-green.svg) ![](https://img.shields.io/badge/Docker-18.06CE-green.svg) 
 
 本项目源于某培训机构的宜立方商城（淘淘商城）项目，重新利用 `SpringBoot 2.0.4` 框架替代原始的SSM三大框架进行重构项目，采用 `Docker` 容器替代原本的虚拟机来进行项目的部署。
 
@@ -1026,7 +1026,20 @@
 ### 单点登录
 
 1. 搭建 *e3-sso* 聚合工程，包含 *e3-sso-interface* 和 *e3-sso-service* 两个模块（类似 *e3-content* ）；
+
 2. 搭建 *e3-sso-web* 前台单点登录模块（类似 *e3-portal-web* ）；
+
 3. 用户填写的注册信息进行后台数据校验；
+
 4. 用户登录、注册实现；
-5. 
+
+5. 利用 Redis 模拟SessionID 实现分布式系统 Session 同步共享（蓝底部分）；
+
+   ![SSO系统实现逻辑](readme.assets/sso系统逻辑.jpg)
+
+6. 其他系统调用*SSO*服务根据 token 查询用户信息（跨域请求）。
+
+### 购物车模块
+
+1. 
+
