@@ -1041,5 +1041,6 @@
 
 ### 购物车模块
 
-1. 
+1. 搭建 *e3-cart* 聚合工程，包含 *e3-cart-interface* 和 *e3-cart-service* 两个模块（类似 *e3-sso* ）；
+2. 
 

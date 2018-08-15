@@ -1,0 +1,21 @@
+mybatis:
+  config-location: classpath:mybatis/SqlMapConfig.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+spring:
+  datasource:
+    username: root
+    password: 1234
+    url: jdbc:mysql://192.168.18.129:3306/e3mall
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+dubbo:
+  application:
+    name: e3-cart
+  registry:
+    address: zookeeper://192.168.18.129:2181
+  scan:
+    basePackages: guo.ping.e3mall.cart.service
+  protocol:
+    port: 20884
