@@ -1,11 +1,13 @@
 package guo.ping.e3mall.cart.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import guo.ping.e3mall.cart.service.CartService;
 import guo.ping.e3mall.common.pojo.E3Result;
 import guo.ping.e3mall.common.utils.CookieUtils;
 import guo.ping.e3mall.common.utils.JsonUtils;
 import guo.ping.e3mall.manager.service.TbItemService;
 import guo.ping.e3mall.pojo.TbItem;
+import guo.ping.e3mall.pojo.TbUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -31,10 +33,27 @@ public class CartController {
 
     @Reference
     private TbItemService itemService;
+    @Reference
+    private CartService cartService;
 
+    /**
+     * 添加购物车：登录时添加redis，未登录添加cookie
+     * @param itemId
+     * @param num
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping("/add/{itemId}.html")
     public String addCartItem(@PathVariable Long itemId, @RequestParam(defaultValue = "1") Integer num,
                               HttpServletRequest request, HttpServletResponse response) {
+        // 登录添加至redis
+        TbUser user = (TbUser) request.getAttribute("user");
+        if (user != null) {
+            cartService.addCart(user.getId(), itemId, num);
+            return "cartSuccess";
+        }
+        // 未登录添加至cookie
         // 1、从cookie中查询商品列表。
         List<TbItem> cartList = getCartListFromCookie(request);
         // 2、判断商品在商品列表中是否存在。
@@ -88,11 +107,20 @@ public class CartController {
     }
 
     @RequestMapping("/cart.html")
-    public String showCartList(HttpServletRequest request, Model model) {
-        //取购物车商品列表
+    public String showCartList(HttpServletRequest request, HttpServletResponse response) {
+        //取Cookie购物车商品列表
         List<TbItem> cartList = getCartListFromCookie(request);
+        // 登录添加至redis
+        TbUser user = (TbUser) request.getAttribute("user");
+        if (user != null) {
+            // 合并购物车
+            cartService.mergeCart(user.getId(), cartList);
+            // 删除Cookie中购物车列表
+            CookieUtils.deleteCookie(request, response, E3_CART);
+            cartList = cartService.getCartList(user.getId());
+        }
         //传递给页面
-        model.addAttribute("cartList", cartList);
+        request.setAttribute("cartList", cartList);
         return "cart";
     }
 
@@ -108,6 +136,11 @@ public class CartController {
     @ResponseBody
     public E3Result updateNum(@PathVariable Long itemId, @PathVariable Integer num,
                               HttpServletRequest request, HttpServletResponse response) {
+        TbUser user = (TbUser) request.getAttribute("user");
+        if (user != null) {
+            return cartService.updateCartNum(user.getId(), itemId, num);
+        }
+        // 未登录
         // 1、接收两个参数
         // 2、从cookie中取商品列表
         List<TbItem> cartList = getCartListFromCookie(request);
@@ -127,6 +160,12 @@ public class CartController {
     @RequestMapping("/delete/{itemId}.html")
     public String deleteCartItem(@PathVariable Long itemId, HttpServletRequest request,
                                  HttpServletResponse response) {
+        TbUser user = (TbUser) request.getAttribute("user");
+        if (user != null) {
+            cartService.deleteCartItem(user.getId(), itemId);
+            return "redirect:/cart/cart.html";
+        }
+        // 未登录
         // 1、从url中取商品id
         // 2、从cookie中取购物车商品列表
         List<TbItem> cartList = getCartListFromCookie(request);
