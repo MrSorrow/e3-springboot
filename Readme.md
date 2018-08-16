@@ -1042,5 +1042,8 @@
 ### 购物车模块
 
 1. 搭建 *e3-cart* 聚合工程，包含 *e3-cart-interface* 和 *e3-cart-service* 两个模块（类似 *e3-sso* ）；
-2. 
+2. 搭建 *e3-cart-web* 前台单点登录模块（类似 *e3-sso-web* ）；
+3. 用户添加商品至购物车保存至 *Cookie*；
+4. 从 *Cookie* 中取出商品列表，修改时更新 *Cookie*（购物车增删改查）；
+5. 
 
