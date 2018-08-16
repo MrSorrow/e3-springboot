@@ -1055,3 +1055,8 @@
 
    ![购物车页面](readme.assets/1534383316382.png)
 
+### 订单系统
+
+1. 搭建 *e3-order* 聚合工程，包含 *e3-order-interface* 和 *e3-order-service* 两个模块；
+2. 搭建 *e3-order-web* 前台订单模块；
+

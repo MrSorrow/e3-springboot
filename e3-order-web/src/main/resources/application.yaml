@@ -1,0 +1,9 @@
+#tomcat conf
+server:
+  port: 8087
+#dubbo conf
+dubbo:
+  application:
+    name: e3-order-web
+  registry:
+      address: zookeeper://192.168.18.129:2181

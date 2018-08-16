@@ -10,10 +10,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>e3-cart-web</artifactId>
+    <artifactId>e3-order-web</artifactId>
     <packaging>jar</packaging>
 
-    <name>e3-cart-web</name>
+    <name>e3-order-web</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,17 +24,7 @@
     <dependencies>
         <dependency>
             <groupId>guo.ping.e3mall</groupId>
-            <artifactId>e3-cart-interface</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>guo.ping.e3mall</groupId>
-            <artifactId>e3-manager-interface</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>guo.ping.e3mall</groupId>
-            <artifactId>e3-sso-interface</artifactId>
+            <artifactId>e3-order-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <!--springboot的web组件-->
@@ -72,7 +62,7 @@
     </dependencies>
 
     <build>
-        <finalName>e3-cart-web</finalName>
+        <finalName>e3-order-web</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
