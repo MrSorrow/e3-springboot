@@ -31,9 +31,9 @@ public class CartServiceImpl implements CartService {
         Boolean hasItem = redisTemplate.opsForHash().hasKey(REDIS_CART_PRE + ":" + userId, itemId+"");
         if (hasItem) {
             // 商品存在，数量相加
-            TbItem tbItem = (TbItem) redisTemplate.opsForHash().get(REDIS_CART_PRE + ":" + userId, itemId);
+            TbItem tbItem = (TbItem) redisTemplate.opsForHash().get(REDIS_CART_PRE + ":" + userId, itemId+"");
             tbItem.setNum(tbItem.getNum() + num);
-            redisTemplate.opsForHash().put(REDIS_CART_PRE + ":" + userId, itemId, tbItem);
+            redisTemplate.opsForHash().put(REDIS_CART_PRE + ":" + userId, itemId+"", tbItem);
             return E3Result.ok();
         } else {
             // 商品不存在，查询数据库添加商品
@@ -68,15 +68,26 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public E3Result updateCartNum(Long userId, Long itemId, int num) {
-        TbItem tbItem = (TbItem) redisTemplate.opsForHash().get(REDIS_CART_PRE + ":" + userId, itemId);
+        TbItem tbItem = (TbItem) redisTemplate.opsForHash().get(REDIS_CART_PRE + ":" + userId, itemId+"");
         tbItem.setNum(tbItem.getNum() + num);
-        redisTemplate.opsForHash().put(REDIS_CART_PRE + ":" + userId, itemId, tbItem);
+        redisTemplate.opsForHash().put(REDIS_CART_PRE + ":" + userId, itemId+"", tbItem);
         return E3Result.ok();
     }
 
     @Override
     public E3Result deleteCartItem(Long userId, Long itemId) {
-        redisTemplate.opsForHash().delete(REDIS_CART_PRE + ":" + userId, itemId);
+        redisTemplate.opsForHash().delete(REDIS_CART_PRE + ":" + userId, itemId+"");
+        return E3Result.ok();
+    }
+
+    /**
+     * 清除购物车
+     * @param userId
+     * @return
+     */
+    @Override
+    public E3Result clearCartList(Long userId) {
+        redisTemplate.delete(REDIS_CART_PRE + ":" + userId);
         return E3Result.ok();
     }
 }

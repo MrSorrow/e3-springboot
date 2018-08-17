@@ -1059,4 +1059,6 @@
 
 1. 搭建 *e3-order* 聚合工程，包含 *e3-order-interface* 和 *e3-order-service* 两个模块；
 2. 搭建 *e3-order-web* 前台订单模块；
+3. 利用 Redis 生成订单号；
+4. 创建订单，保存至数据库。
 
