@@ -6,21 +6,21 @@ spring:
   datasource:
     username: root
     password: 1234
-    url: jdbc:mysql://192.168.18.129:3306/e3mall
+    url: jdbc:mysql://192.168.223.128:3306/e3mall
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
   redis:
     timeout: 5000
 # redis-single
-    host: 192.168.18.129
+    host: 192.168.223.128
     port: 6379
 # redis-cluster
 #    cluster:
 #      max-redirects: 3
 #      nodes:
-#      - 192.168.18.129:6380
-#      - 192.168.18.129:6381
-#      - 192.168.18.129:6382
+#      - 192.168.223.128:6380
+#      - 192.168.223.128:6381
+#      - 192.168.223.128:6382
 #    lettuce:
 #      pool:
 #        max-active: 100
@@ -32,7 +32,7 @@ dubbo:
   application:
     name: e3-content
   registry:
-    address: zookeeper://192.168.18.129:2181
+    address: zookeeper://192.168.223.128:2181
   scan:
     basePackages: guo.ping.e3mall.content.service
   protocol:

@@ -3,7 +3,7 @@ dubbo:
   application:
     name: e3-manager-web
   registry:
-      address: zookeeper://192.168.18.129:2181
+      address: zookeeper://192.168.223.128:2181
 #picture upload conf
 spring:
   servlet:

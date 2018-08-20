@@ -6,20 +6,20 @@ spring:
   datasource:
     username: root
     password: 1234
-    url: jdbc:mysql://192.168.18.129:3306/e3mall
+    url: jdbc:mysql://192.168.223.128:3306/e3mall
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
   redis:
     timeout: 5000
 # redis-single
-    host: 192.168.18.129
+    host: 192.168.223.128
     port: 6379
 
 dubbo:
   application:
     name: e3-sso
   registry:
-    address: zookeeper://192.168.18.129:2181
+    address: zookeeper://192.168.223.128:2181
   scan:
     basePackages: guo.ping.e3mall.sso.service
   protocol:

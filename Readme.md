@@ -40,7 +40,37 @@ git clone https://github.com/MrSorrow/e3-springboot.git
 ### 修改配置文件
 
 1. 修改项目所有的 *ip* 地址；
-2. 修改数据库连接用户名、密码；
+2. 修改数据库连接用户名、密码。
+
+### 启动所有模块
+
+1. 启动所有容器实例；
+
+   ![所有容器](readme.assets/1534772802870.png)
+
+2. 启动所有Dubbo服务；
+
+   | 服务                                                     | 模块     |
+   | :------------------------------------------------------- | :------- |
+   | guo.ping.e3mall.manager.ManagerServiceApplicationStarter | 后台     |
+   | guo.ping.e3mall.content.ContentServiceApplicationStarter | CMS      |
+   | guo.ping.e3mall.search.SearchServiceApplicationStarter   | 搜索     |
+   | guo.ping.e3mall.sso.SsoServiceApplicationStarter         | 单点登录 |
+   | guo.ping.e3mall.cart.CartServiceApplicationStarter       | 购物车   |
+   | guo.ping.e3mall.order.OrderServiceApplicationStarter     | 订单     |
+
+3. 启动所有Web应用。
+
+   | Web                                                  | 模块      |
+   | ---------------------------------------------------- | --------- |
+   | guo.ping.e3mall.manager.ManagerWebApplicationStarter | 后台      |
+   | guo.ping.e3mall.portal.PortalWebApplicationStarter   | 首页      |
+   | guo.ping.e3mall.search.SearchWebApplicationStarter   | 搜索      |
+   | guo.ping.e3mall.item.ItemWebApplicationStarter       | 商品详情  |
+   | guo.ping.e3mall.sso.SsoWebApplicationStarter         | 单点登录  |
+   | guo.ping.e3mall.cart.CartWebApplicationStarter       | 购物车    |
+   | guo.ping.e3mall.order.OrderWebApplicationStarter     | 订单      |
+   | com.alibaba.dubboadmin.DubboAdminApplication         | Dubbo监控 |
 
 ## II. 项目教程
 
@@ -105,7 +135,7 @@ git clone https://github.com/MrSorrow/e3-springboot.git
 
 ### 安装MySQL
 
-1. [CentOS7安装Docker CE](https://docs.docker.com/install/linux/docker-ce/centos/)；
+1. [CentOS 7安装Docker CE](https://docs.docker.com/install/linux/docker-ce/centos/)；
 
    ```bash
    # SET UP THE REPOSITORY AND INSTALL DOCKER CE
@@ -117,7 +147,7 @@ git clone https://github.com/MrSorrow/e3-springboot.git
    # Manage Docker as a non-root user
    sudo groupadd docker
    sudo usermod -aG docker $USER
-   ＃log out and log back in
+   # log out and log back in
    ```
 
 2. [拉取MySQL镜像](https://hub.docker.com/r/library/mysql/tags/)；
