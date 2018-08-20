@@ -6,6 +6,42 @@
 
 ## I. 导入工程
 
+### 克隆代码仓库
+
+```bash
+git clone https://github.com/MrSorrow/e3-springboot.git
+```
+
+### IDEA导入工程
+
+1. 打开IDEA，选择导入项目，选中克隆的仓库本地所在目录；
+
+   ![选择目录](Readme.assets\1534749753574.png)
+
+2. 选择Maven进行导入；
+
+   ![选择Maven进行导入](Readme.assets\1534749850001.png)
+
+3. 利用Maven导入项目前进行相关配置；
+
+   ![maven配置](Readme.assets\1534749996546.png)
+
+4. 然后选中所有模块进行导入即可，导入成功后可以浏览 Maven Projects 视图。
+
+   ![导入成功](Readme.assets\1534750179724.png)
+
+### 搭建运行环境
+
+1. CentOS系统下安装 Docker；
+2. 利用 Docker 安装MySQL、ZooKeeper、FastDFS、Redis、Solr 和 ActiveMQ。
+
+注：具体参考[II. 项目教程](https://github.com/MrSorrow/e3-springboot#ii-项目教程)部分。
+
+### 修改配置文件
+
+1. 修改项目所有的 *ip* 地址；
+2. 修改数据库连接用户名、密码；
+
 ## II. 项目教程
 
 ### 搭建工程
