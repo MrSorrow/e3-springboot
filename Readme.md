@@ -16,19 +16,19 @@ git clone https://github.com/MrSorrow/e3-springboot.git
 
 1. 打开IDEA，选择导入项目，选中克隆的仓库本地所在目录；
 
-   ![选择目录](Readme.assets\1534749753574.png)
+   ![选择目录](readme.assets/1534749753574.png)
 
 2. 选择Maven进行导入；
 
-   ![选择Maven进行导入](Readme.assets\1534749850001.png)
+   ![选择Maven进行导入](readme.assets/1534749850001.png)
 
 3. 利用Maven导入项目前进行相关配置；
 
-   ![maven配置](Readme.assets\1534749996546.png)
+   ![maven配置](readme.assets/1534749996546.png)
 
 4. 然后选中所有模块进行导入即可，导入成功后可以浏览 Maven Projects 视图。
 
-   ![导入成功](Readme.assets\1534750179724.png)
+   ![导入成功](readme.assets/1534750179724.png)
 
 ### 搭建运行环境
 
