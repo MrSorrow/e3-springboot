@@ -61,16 +61,16 @@ git clone https://github.com/MrSorrow/e3-springboot.git
 
 3. 启动所有Web应用。
 
-   | Web                                                  | 模块      |
-   | ---------------------------------------------------- | --------- |
-   | guo.ping.e3mall.manager.ManagerWebApplicationStarter | 后台      |
-   | guo.ping.e3mall.portal.PortalWebApplicationStarter   | 首页      |
-   | guo.ping.e3mall.search.SearchWebApplicationStarter   | 搜索      |
-   | guo.ping.e3mall.item.ItemWebApplicationStarter       | 商品详情  |
-   | guo.ping.e3mall.sso.SsoWebApplicationStarter         | 单点登录  |
-   | guo.ping.e3mall.cart.CartWebApplicationStarter       | 购物车    |
-   | guo.ping.e3mall.order.OrderWebApplicationStarter     | 订单      |
-   | com.alibaba.dubboadmin.DubboAdminApplication         | Dubbo监控 |
+   | Web                                                  | 模块      | 地址                                             |
+   | ---------------------------------------------------- | --------- | ------------------------------------------------ |
+   | guo.ping.e3mall.manager.ManagerWebApplicationStarter | 后台      | [http://localhost:8081/](http://localhost:8081/) |
+   | guo.ping.e3mall.portal.PortalWebApplicationStarter   | 首页      | [http://localhost:8082/](http://localhost:8082/) |
+   | guo.ping.e3mall.search.SearchWebApplicationStarter   | 搜索      | [http://localhost:8083/](http://localhost:8083/) |
+   | guo.ping.e3mall.item.ItemWebApplicationStarter       | 商品详情  | [http://localhost:8084/](http://localhost:8084/) |
+   | guo.ping.e3mall.sso.SsoWebApplicationStarter         | 单点登录  | [http://localhost:8085/](http://localhost:8085/) |
+   | guo.ping.e3mall.cart.CartWebApplicationStarter       | 购物车    | [http://localhost:8086/](http://localhost:8086/) |
+   | guo.ping.e3mall.order.OrderWebApplicationStarter     | 订单      | [http://localhost:8087/](http://localhost:8087/) |
+   | com.alibaba.dubboadmin.DubboAdminApplication         | Dubbo监控 | [http://localhost:7006/](http://localhost:7006/) |
 
 ## II. 项目教程
 
