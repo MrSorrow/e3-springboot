@@ -1,8 +1,8 @@
-# SpringBoot+Docker重构淘淘商城
+# SpringBoot+Docker重构宜立方商城
 
 ![](https://img.shields.io/badge/Java-1.8-blue.svg) ![](https://img.shields.io/badge/SpringBoot-2.0.4-blue.svg) ![](https://img.shields.io/badge/Dubbo-2.6.2-blue.svg) ![](https://img.shields.io/badge/ZooKeeper-3.4.13-blue.svg) ![](https://img.shields.io/badge/Solr-7.4-blue.svg) ![](https://img.shields.io/badge/ActiveMQ-5.14.3-blue.svg) ![](https://img.shields.io/badge/Thymeleaf-3.0.9-blue.svg) ![](https://img.shields.io/badge/FastDFS-5.05-blue.svg) ![](https://img.shields.io/badge/MySQL-5.7.23-blue.svg) ![](https://img.shields.io/badge/Redis-3.2-blue.svg) ![](https://img.shields.io/badge/Tomcat-8.5-green.svg) ![](https://img.shields.io/badge/Maven-3.3.9-green.svg) ![](https://img.shields.io/badge/IDEA-2017.2-green.svg) ![](https://img.shields.io/badge/Windows-10-green.svg) ![](https://img.shields.io/badge/CentOS-7.4-green.svg) ![](https://img.shields.io/badge/Docker-18.06CE-green.svg) 
 
-本项目源于某培训机构的宜立方商城（淘淘商城）项目，重新利用 `SpringBoot 2.0.4` 框架替代原始的SSM三大框架进行重构项目，采用 `Docker` 容器替代原本的虚拟机来进行项目的部署。
+本项目源于宜立方商城项目，重新利用 `SpringBoot 2.0.4` 框架替代原始的SSM三大框架进行重构项目，采用 `Docker` 容器替代原本的虚拟机来进行项目的部署。
 
 ## I. 导入工程
 
